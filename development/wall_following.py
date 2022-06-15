@@ -1,20 +1,16 @@
+
 class WallFollowingLogic:
-    def __init__(self, wall_side, left: bool, right: bool, front: bool):
+    def __init__(self, wall_side: str = "right"):
         self.wall_side = wall_side
+    
+    def get_wall_info(self, left: bool, right: bool, front: bool):
         self.left_wall = left  # is there something close or not?
         self.right_wall = right  # is there something close or not?
         self.front_wall = front  # is there something close or not?
-        
-    def forward(self):
-        pass
-    
-    def turn_right(self):
-        pass
-    
-    def turn_left(self):
-        pass
-    
+
     def choose_move(self):
+        self.get_wall_info()
+        
         if self.wall_side == "left":
             # drive along wall
             if self.left_wall and not self.front_wall:
@@ -51,5 +47,14 @@ class WallFollowingLogic:
                 
         return self
 
+            
+    def forward(self):
+        pass
+    
+    def turn_right(self):
+        pass
+    
+    def turn_left(self):
+        pass
 
 
