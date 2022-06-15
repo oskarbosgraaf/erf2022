@@ -48,6 +48,8 @@ class WallFollowingLogic:
             # get back to the wall and keep the wall right
             elif not self.right_wall and self.front_wall:
                 self.turn_left()
+                
+        return self
 
 
 
