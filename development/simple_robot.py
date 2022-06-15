@@ -1,9 +1,9 @@
-# from mirte_robot import robot
-# mirte = robot.createRobot()
+from mirte_robot_lokaal import robot
+mirte = robot.createRobot()
 
 # # Import rospy
-# import rospy
-# from geometry_msgs.msg import Twist
+import rospy
+from geometry_msgs.msg import Twist
 
 # Vragen aan Oskar
 # 1a We hebben een specifieke distance to the wall nodig. Welke waarden via de sensoren kunnen wij verwachten? 
