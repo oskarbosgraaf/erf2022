@@ -18,17 +18,6 @@ def clbk_laser(msg):
 
     take_action(regions)
 
-def clbk_laser(msg):
-    regions = {
-        'right':  min(min(msg.ranges[0:143]), 10),
-        'fright': min(min(msg.ranges[144:287]), 10),
-        'front':  min(min(msg.ranges[288:431]), 10),
-        'fleft':  min(min(msg.ranges[432:575]), 10),
-        'left':   min(min(msg.ranges[576:713]), 10),
-    }
-
-    take_action(regions)
-
 def take_action(regions):
     msg = Twist()
     linear_x = 0
