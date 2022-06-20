@@ -2,35 +2,58 @@ import numpy as np
 # Current code for the main program
 
 class Arbiter:
-    def __init__(self, lidar, distance_front, distance_left):
+    def __init__(self, lidar, distance_front, distance_left, msg):
         self.behavior_names = ['find wall', 'follow wall', 'homing', 'avoid', 'corridor']
-        self.lidar = lidar
+
         self.distance_front = distance_front
         self.distance_left = distance_left
+
+        self.required_walldist = 0.6
+        self.object_distance = 0.3
+
+        self.regions_lidar = {
+        'right':  min(msg.ranges[213:355]),
+        'fright': min(msg.ranges[355:497]),
+        'front':  min(msg.ranges[497:639]),
+        'fleft':  min(msg.ranges[639:781]),
+        'left':   min(msg.ranges[781:923])
+        }
+
         
     def check_find_wall(self):
         # output is dus false als er iets in de buurt is
         # en anders true
+        
         pass
     
     def check_wall_left(self):
         # output = is dit aan de hand ja of nee?
-        pass
+        if self.regions_lidar['left'] <= self.required_walldist:
+            return True
+
+        return False
 
     def check_wall_right(self):
         # output = is dit aan de hand ja of nee?
-        pass
+        if self.regions_lidar['right'] <= self.required_walldist:
+            return True
+
+        return False
         
     def check_obstacle(self):
         # output = wil je een obstacle ontwijken ja of nee?
-        pass
+        if (self.regions_lidar['front'] < self.object_distance or self.regions_lidar['fright']< self.object_distance) or self.regions_lidar['fleft']< self.object_distance:
+            return True
+
+        return False
+
         
     def check_if_complete(self):
         # output = wil je terug naar de base ja of nee?
         pass
     
     def check_corridor(self):
-        if self.check_wall_left() and self.check_wall_right():
+        if (self.regions_lidar['left'] + self.regions_lidar['right']) <= 1:
             return True
         
         return False
