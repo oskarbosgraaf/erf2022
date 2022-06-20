@@ -1,6 +1,7 @@
 import numpy as np
 # Current code for the main program
 
+
 class Arbiter:
     def __init__(self, lidar, distance_front, distance_left, msg):
         self.behavior_names = ['find wall', 'follow wall', 'homing', 'avoid', 'corridor']
