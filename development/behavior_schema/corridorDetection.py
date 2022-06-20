@@ -7,6 +7,7 @@ class corridorDetection:
     def __init__(self):
         self.detector = "Laser"
         self.pub = None
+        self.corridor_distance = 1
 
     def clbk_laser(self, msg):
 
@@ -18,7 +19,7 @@ class corridorDetection:
     
     def checkCorridor(self, left, right):
 
-        if (left + right) < 1:
+        if (left + right) < self.corridor_distance:
             return True
     
     def detectCorridor(self):
