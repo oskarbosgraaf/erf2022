@@ -6,7 +6,13 @@ from wall_following import wallFollower
 from default_stop import Stop
 from homing import Homing
 
-
+##########################
+# Vraag aan Thijmen en Francien:
+# Snappen jullie waarom in de code van het BBR handboek
+# Staat dat alle behaviors in de schedule allemaal een keer moeten runnen?
+# Ik interpreteer het eigenlijk als dat ze allemaal mogen runnen om te laten zien of ze control willen
+# Maar ik twijfel daar wel over
+##########################
 class Scheduler:
     """Every Behavior Based system needs:
     1. A scheduler
