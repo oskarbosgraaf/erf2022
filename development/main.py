@@ -1,10 +1,37 @@
 # Current code for the main program
 
-
+class Arbiter:
+    def __init__(self, lidar, distance_front, distance_left):
+        self.behavior_names = ['follow wall', 'find wall', 'avoid', 'homing', 'corridor']
+        self.lidar = lidar
+        self.distance_front = distance_front
+        self.distance_left = distance_left
+        
+    
+    def check_wall_left(self, lidar):
+        # input = lidar
+        # output = is dit aan de hand ja of nee?
+        
+        
+        
+    def check_wall_right(self, lidar):
+        # input = lidar
+        # output = is dit aan de hand ja of nee?
+        
+    def 
+    def arbitrate(self, ):
+        for behavior in self.behavior_names:
+            
+            
+        
+        
+        
+        
 def detect_juno():
     # if juno is within certain range
     if seen:
         return True
+    
     
     return False
 
@@ -55,4 +82,4 @@ while True:
         else:
             follow_wall()
             
-            
+
