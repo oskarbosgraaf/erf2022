@@ -19,12 +19,6 @@ class Arbiter:
         'left':   min(msg.ranges[781:923])
         }
 
-        
-    def check_find_wall(self):
-        # output is dus false als er iets in de buurt is
-        # en anders true
-        
-        pass
     
     def check_wall_left(self):
         # output = is dit aan de hand ja of nee?
@@ -47,7 +41,6 @@ class Arbiter:
 
         return False
 
-        
     def check_if_complete(self):
         # output = wil je terug naar de base ja of nee?
         pass
@@ -66,20 +59,17 @@ class Arbiter:
     def arbitrate(self):
         control_array = np.zeros(len(self.behavior_names))
         
-        # find wall behavior
+        # follow wall behavior
         control_array[0] = self.check_wall_left()
         
-        # follow wall behavior
-        control_array[1] = self.check_find_wall()
-        
         # homing behavior
-        control_array[2] = self.check_wall_left()
+        control_array[1] = self.check_if_complete()
         
         # corridor behavior
-        control_array[3] = self.check_wall_left()
+        control_array[2] = self.check_corridor()
         
-        # avoid behaviour
-        control_array[4] = self.check_wall_left()
+        # avoid behavior
+        control_array[3] = self.check_obstacle()
         
         behavior = self.getBehavior(control_array)
         
