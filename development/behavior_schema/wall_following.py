@@ -280,7 +280,7 @@ class wallFollower:
         return self.bool_inner_corner
 
     def FollowWall(self):
-        global pub_, active_, self.hz, self.loop_index
+        # global pub_, active_, self.hz, self.loop_index
     
         rospy.init_node('reading_laser')
         
