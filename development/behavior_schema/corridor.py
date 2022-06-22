@@ -58,7 +58,7 @@ class corridor:
             pub_.publish(msg)
 
         msg = Twist()
-        msg.linear.x = 0
+        msg.linear.x = -0.2
         msg.linear.z = 0
         pub_.publish(msg)
 
