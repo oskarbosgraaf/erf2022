@@ -49,7 +49,7 @@ class wallFollower:
                 'fright': 0,
                 'front': 0,
                 'left': 0,
-        }
+        }from geometry_msgs.msg import Twist
         self.last_kinds_of_wall=[0, 0, 0, 0, 0]
         self.index = 0
 
