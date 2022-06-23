@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 
-video=cv2.VideoCapture(1,cv2.CAP_DSHOW)
+# video=cv2.VideoCapture(0,cv2.CAP_DSHOW)
+video=cv2.VideoCapture(0)
 
 hype = True
 
 while(hype):
     ret,frame=video.read()
-    img=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+    img=cv2.cvtColor(frame,cv2.COLOR_BGR2BGRA)
     # gb = cv2.GaussianBlur(img, (5, 5), 100)
 
     edge=cv2.Canny(img, 100, 200)
