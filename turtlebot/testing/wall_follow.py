@@ -29,8 +29,8 @@ class WallFollower:
         #   Subscribes to the laser scan topic,
         #   Publishes to  drive topic - to move the vehicle.
         # Initialize subscriber to laser scan.
-        if not in corridor;
-         rospy.Subscriber(self.SCAN_TOPIC, LaserScan, self.LaserCb)
+
+        rospy.Subscriber(self.SCAN_TOPIC, LaserScan, self.LaserCb)
 
         self.drive_pub = rospy.Publisher(self.DRIVE_TOPIC, Twist, queue_size = 10)
 
