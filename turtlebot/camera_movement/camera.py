@@ -42,12 +42,13 @@ class Camera:
     plt.imshow(input)
     plt.show()
 
-    def show_video_blob(self, method):
+    def show_video_blob(self):
         # cap = cv2.VideoCapture(1)
+
         while(self.video.isOpened()):
             ret, frame = self.video.read()
             if ret == True:
-                frame, _ = method(frame)
+                frame, _ = self.one_big_rect(frame)
                 cv2.imshow('Frame',frame)
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
@@ -69,17 +70,21 @@ class Camera:
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
 
-            if centerX < 480:
-                print('adjustright')
-                time.sleep(0.5)
-            elif centerX > 480:
-                print('adjustleft')
-                time.sleep(0.5)
+            if centerX < 460:
+                return 'adjustright'
+            elif centerX > 500:
+                return 'adjustleft'
+
+            else:
+                return 'drivestraight'
+
+
+                
 
         self.video.release()
 
         cv2.destroyAllWindows()
 
 
-C = Camera(cv2.VideoCapture(1,cv2.CAP_DSHOW))
+
 
