@@ -1,6 +1,23 @@
 
 
 ##for gen1 devices:
+
+
+###approach direct device-device connection
+*SHELLY HTTP command syntax*
+https://[deviceIP]/relay/[channel]?[command]&[command]
+or with **authorised** command syntax:
+https://[user]:[password]@[deviceIP]/relay/[channel]?[command]&[command]
+
+example: https://gustav:1234321@146.50.60.43/relay/0?turn=on&timer=020
+    turn ?plug? with IPaddress 146.50.60.43 on for 20 seconds, as user gustav
+
+
+
+
+
+
+###approach MQTT connection protocol
 in device settings:
     mqtt_server = brokers address:port (probably dynabically assigned?)
     mqtt_enable = true
@@ -33,6 +50,7 @@ complete current state@
     possible to set new state message period with@
     /settings with mqtt_update_period
     and disable with value=0
+
 
 *common MQTT commands*
 published@
