@@ -127,3 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+development/blob_detection/derck_test.ipynb
