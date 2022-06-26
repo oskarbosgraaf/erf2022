@@ -19,6 +19,7 @@ class ShellyMQTT():
         self.user               = user
         self.token              = token
 
+
     def switchMQTT(self, turn:str = None) -> None:
         """
         Connect to Shelly plug-S over MQTT protocol and switch power
@@ -27,24 +28,19 @@ class ShellyMQTT():
 
         if not (self.broker and self.topic):
             raise AttributeMissingError("specify broker and topic to connect via MQTT")
-        #if not self.token:
-        #    warnings.warn("WARNING: if user or token are not set, MQTT verification might not pass")
+        if not self.token:
+            warnings.warn("WARNING: if user or token are not set, MQTT verification might not pass")
 
         client = mqtt.Client(self.user)
 
-        #@client.connect_callback()
+        @client.connect_callback()
         def on_connect(client, userdata, flags, rc):
             print("Connection returned " + str(rc))
 
-        client.on_connect = on_connect
-
-        #@client.connecti_fail_callback()
+        @client.connect_fail_callback()
         def on_connect_fail(client, userdata, flags, rc):
             print("Connection NOT returned ", + str(rc))
 
-        client.on_connect_fail = on_connect_fail
-
-        print(f"broker is {self.broker}")
         client.connect(self.broker)
 
         if turn is None:    message = "?turn=toggle"
@@ -52,7 +48,7 @@ class ShellyMQTT():
         else:               message = "?turn=off"
 
         @client.publish_callback()
-        def on_publish(client, userdata, flags, rc):
+        def on_publish(client, userdata):
             print(f"published message brih @{rc}")
 
         #client.on_publish = on_publish
@@ -61,8 +57,8 @@ class ShellyMQTT():
 
 
     def listenMQTT(self):
-        client = mqtt.Client(self.user)
-
+        #client = mqtt.Client(self.user)
+        pass
 
 
 def main():
