@@ -5,8 +5,8 @@ import numpy as np
 import time
 
 class Camera:
-    def __init__(self, video):
-        self.video = video
+    def __init__(self):
+        self.video = None
 
     def show_RGB_to_HSV(self, image):
         img_HSV = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
@@ -37,13 +37,13 @@ class Camera:
         RGB_result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
         return RGB_result, centerX
 
-    img = cv2.imread("blob_images/donald.jpg")
-    input, _ = one_big_rect(img)
-    plt.imshow(input)
-    plt.show()
+    # img = cv2.imread("blob_images/donald.jpg")
+    # input, _ = one_big_rect(img)
+    # plt.imshow(input)
+    # plt.show()
 
     def show_video_blob(self):
-        # cap = cv2.VideoCapture(1)
+        self.video = cv2.VideoCapture(1)
 
         while(self.video.isOpened()):
             ret, frame = self.video.read()
@@ -59,32 +59,48 @@ class Camera:
 
     # Onderstaande is de functie is voor blob detection en welke kant hij opgestuurd moet worden
 
-    def video_blob_direction(self, method):
-        # cap = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+    def video_blob_direction(self):
+        self.video = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+        # print('video =')
+        # print(self.video)
+
+        # _, frame = self.video.read()
+        # print(f'frame = {frame}')
+        print("1")
         while(self.video.isOpened()):
+            print("2")
+            # print('in video direction while')
             ret, frame = self.video.read()
+            # print(f'frame = {frame}')
             if ret == True:
-                frame, centerX = method(frame)
+                frame, centerX = self.one_big_rect(frame)
                 cv2.imshow('Frame',frame)
                 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
+            else:
+                # print('ret == false')
+                print("None")
 
             if centerX < 460:
-                return 'adjustright'
+                print('adjustright')
             elif centerX > 500:
-                return 'adjustleft'
+                print('adjustleft')
 
             else:
-                return 'drivestraight'
-
-
-                
+                print('drivestraight')
 
         self.video.release()
 
         cv2.destroyAllWindows()
 
+if __name__ == '__main__':
+    # rospy.init_node('FollowBlob', anonymous=False)
+    print( " === Starting Program === " )
+    # fb = FollowBlob()
+    cam = Camera()
+    cam.video_blob_direction()
+        # fb.decideBehavior(cam)
 
 
 
