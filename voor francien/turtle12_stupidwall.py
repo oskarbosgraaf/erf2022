@@ -95,7 +95,7 @@ class WallFollow:
         if R_plus and F_plus:
             print('Muur net iets te ver')
             # self.move(0.13, -1, 0.1)
-            self.move(0.2, -0.5, 0.13) # adjust left
+            self.move(0.2, -0.5, 0.13) # adjust right
 
         if R_plusplus and F_plus:
             print('Geen voorkant, geen muur')
