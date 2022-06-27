@@ -61,8 +61,8 @@ class Camera:
 
     def video_blob_direction(self):
         self.video = cv2.VideoCapture(1,cv2.CAP_DSHOW)
-        # print('video =')
-        # print(self.video)
+        print('video =')
+        print(self.video)
 
         # _, frame = self.video.read()
         # print(f'frame = {frame}')
