@@ -60,9 +60,11 @@ class Camera:
     # Onderstaande is de functie is voor blob detection en welke kant hij opgestuurd moet worden
 
     def video_blob_direction(self):
-        self.video = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+        # 0 voor ubuntu logitech camera 
+        self.video = cv2.VideoCapture(0,cv2.CAP_V4L2)
         print('video =')
         print(self.video)
+
 
         # _, frame = self.video.read()
         # print(f'frame = {frame}')
@@ -80,15 +82,18 @@ class Camera:
                     break
             else:
                 # print('ret == false')
-                print("None")
+                return None
 
             if centerX < 460:
                 print('adjustright')
+                return 'adjustright'
             elif centerX > 500:
                 print('adjustleft')
+                return 'adjustleft'
 
             else:
                 print('drivestraight')
+                return 'drivestraight'
 
         self.video.release()
 
