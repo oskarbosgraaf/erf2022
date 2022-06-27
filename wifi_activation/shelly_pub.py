@@ -1,20 +1,21 @@
 
 
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt_client
 import warnings
 
 
 class ShellyMQTT():
 
-    def __init__(self, broker:str = None,
+    def __init__(self, broker:str = None, port: int = None,
                  topic:str = "shellies/shellyplug-s-<deviceId>/relay/0",
-                 user:str = "gustav", token:str = None
+                 username:str = "gustav", token:str = None
                  ) -> None:
         """
         TODO:
             add <deviceId> in default topic value for relay of stwitch status
         """
         self.broker             = broker
+        self.port               = port
         self.topic              = topic
         self.user               = user
         self.token              = token
@@ -56,8 +57,24 @@ class ShellyMQTT():
         return
 
 
-    def listenMQTT(self):
-        #client = mqtt.Client(self.user)
+    def connectMqtt(self) -> mqtt_client.Client:
+        def on_connect(client, userdata, flags, rc):
+            if rc == 0:
+                print(f"connected to shelly broker ({self.broker})")
+            else:
+                print(f"failed to connect with return code {rc}")
+
+        client = mqtt_client.Client(self.username)
+
+        if self.user_name and self.token:
+            client.username_pw_set(self.username, self.token)
+
+        client.on_connect = on_connect
+        client.connect(self.broker, self.port)
+        return client
+
+    def publishMqtt(message: str) -> bool:
+        #TODO
         pass
 
 
