@@ -1,12 +1,12 @@
 
 
-import paho.mqtt.client as mqtt_client
+from paho.mqtt import client as mqtt_client
 import warnings
 
 
 class ShellyMQTT():
 
-    def __init__(self, broker:str = None, port: int = None,
+    def __init__(self, broker:str = None, port: int = 1883,
                  topic:str = "shellies/shellyplug-s-<deviceId>/relay/0",
                  username:str = "gustav", token:str = None
                  ) -> None:
@@ -17,9 +17,9 @@ class ShellyMQTT():
         self.broker             = broker
         self.port               = port
         self.topic              = topic
-        self.user               = user
+        self.username           = username
         self.token              = token
-
+        self.client             = None
 
     def switchMQTT(self, turn:str = None) -> None:
         """
@@ -32,7 +32,7 @@ class ShellyMQTT():
         if not self.token:
             warnings.warn("WARNING: if user or token are not set, MQTT verification might not pass")
 
-        client = mqtt.Client(self.user)
+        self.client = mqtt.Client(self.user)
 
         @client.connect_callback()
         def on_connect(client, userdata, flags, rc):
@@ -42,7 +42,7 @@ class ShellyMQTT():
         def on_connect_fail(client, userdata, flags, rc):
             print("Connection NOT returned ", + str(rc))
 
-        client.connect(self.broker)
+        self.client.connect(self.broker)
 
         if turn is None:    message = "?turn=toggle"
         elif turn == "on":  message = "?turn=on"
@@ -53,29 +53,32 @@ class ShellyMQTT():
             print(f"published message brih @{rc}")
 
         #client.on_publish = on_publish
-        client.publish(self.topic, message)
+        self.client.publish(self.topic, message)
         return
 
 
-    def connectMqtt(self) -> mqtt_client.Client:
+    def connectMqtt(self) -> None:
         def on_connect(client, userdata, flags, rc):
             if rc == 0:
                 print(f"connected to shelly broker ({self.broker})")
             else:
                 print(f"failed to connect with return code {rc}")
 
-        client = mqtt_client.Client(self.username)
+        self.client = mqtt_client.Client(self.username)
 
-        if self.user_name and self.token:
-            client.username_pw_set(self.username, self.token)
+        if self.username and self.token:
+            self.client.username_pw_set(self.username, self.token)
 
-        client.on_connect = on_connect
-        client.connect(self.broker, self.port)
-        return client
+        self.client.on_connect = on_connect
+        self.client.connect(self.broker, self.port)
+        return
 
-    def publishMqtt(message: str) -> bool:
-        #TODO
-        pass
+    def publishMqtt(msg: str) -> None:
+        self.client.publish(topic, msg)
+        if result[0] == 0:
+            print(f"message successfully published to {self.topic}")
+        else: print(f"failed to publish message to {self.topic}")
+        return
 
 
 def main():
@@ -91,21 +94,18 @@ def main():
     #connection.switchMQTT(turn="on")
 
 
-    mqttBroker ="mqtt.eclipseprojects.io"
-    client = mqtt.Client("Temperature_Inside")
-
-    def on_connect():
-        print("connection ye")
-
-    client.on_connect = on_connect
-    client.connect(mqttBroker)
-
-    def on_publish():
-        print("damn, finally a respose")
-
-    client.on_pubish = on_publish
-    client.publish("TEMPERATURE", "testing birh")
+    broker ="mqtt.eclipseprojects.io"
+    port = 1833
+    shelly = ShellyMQTT(broker=broker, port=port)
+    shelly.connectMqtt()
+    for i in range(30):
+        shelly.publishMqtt(msg=f"{i}th message")
+        time.sleep(3)
+    exit(0)
 
 
 if __name__ == "__main__":
     main()
+
+
+
