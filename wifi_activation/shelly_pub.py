@@ -1,81 +1,102 @@
+"""
+MQTT and HTTP publishing for shelly plug-s
+needed dependencies:
+    pip3 install paho-mqtt
+    pip3 install requests
+by Oskar Bosgraaf
+oskar.bosgraaf@gmail.com
+"""
 
-
-import paho.mqtt.client as mqtt_client
+from paho.mqtt import client as mqtt_client
+import requests
 import warnings
+import time
+
+def connect(username: str, broker: str, port: int = 1883,
+            token: str = None) -> mqtt_client:
+    def on_connect(client, userdata, flags, rc):
+        if rc == 0:
+            print(f"connected to shelly broker")
+        else:
+            print(f"failed to connect with return code {rc}")
+
+    client = mqtt_client.Client(username)
+    if not (username and token):
+        client.username_pw_set(username, token)
+
+    client.on_connect = on_connect
+    client.connect(broker, port)
+    return client
 
 
-class ShellyMQTT():
+def publish(client: mqtt_client, topic: str, turn: str = None) -> None:
+    if turn == None:    msg = "?turn=toggle"
+    elif turn == "on":  msg = "?turn=on"
+    elif turn -- "off": msg = "?turn=off"
+    else: raise PlugError("you need to specify a turn value ('on', 'off') or 'None' for toggle")
 
-    def __init__(self, broker:str = None, port: int = None,
-                 topic:str = "shellies/shellyplug-s-<deviceId>/relay/0",
-                 username:str = "gustav", token:str = None
-                 ) -> None:
-        """
-        TODO:
-            add <deviceId> in default topic value for relay of stwitch status
-        """
-        self.broker             = broker
-        self.port               = port
-        self.topic              = topic
-        self.user               = user
-        self.token              = token
+    result = client.publish(topic, msg)
+    if result[0] == 0:
+        print(f"sent '{msg}'\n to topic '{topic}'")
+    else: print(f"failed to send message to topic {topic}")
+    return
 
 
-    def switchMQTT(self, turn:str = None) -> None:
-        """
-        Connect to Shelly plug-S over MQTT protocol and switch power
-        default turn is 'Toggle'
-        """
-
-        if not (self.broker and self.topic):
-            raise AttributeMissingError("specify broker and topic to connect via MQTT")
-        if not self.token:
-            warnings.warn("WARNING: if user or token are not set, MQTT verification might not pass")
-
-        client = mqtt.Client(self.user)
-
-        @client.connect_callback()
-        def on_connect(client, userdata, flags, rc):
-            print("Connection returned " + str(rc))
-
-        @client.connect_fail_callback()
-        def on_connect_fail(client, userdata, flags, rc):
-            print("Connection NOT returned ", + str(rc))
-
-        client.connect(self.broker)
-
-        if turn is None:    message = "?turn=toggle"
-        elif turn == "on":  message = "?turn=on"
-        else:               message = "?turn=off"
-
-        @client.publish_callback()
-        def on_publish(client, userdata):
-            print(f"published message brih @{rc}")
-
-        #client.on_publish = on_publish
-        client.publish(self.topic, message)
-        return
+def loginHTTP(deviceIp: str = "192.168.33.1", deviceId: str = None,
+              model: str = "shellyplug-s", username: str = "gustav",
+              token: str = None) -> None:
+    raise notImplementedError("ga doen dan\nof is het uberhaupt wel benodigd?")
 
 
-    def connectMqtt(self) -> mqtt_client.Client:
-        def on_connect(client, userdata, flags, rc):
-            if rc == 0:
-                print(f"connected to shelly broker ({self.broker})")
-            else:
-                print(f"failed to connect with return code {rc}")
+def switchBasicHTTP(deviceIp: str = "192.168.33.1", deviceId: str = None,
+               model: str = "shellyplug-s", username: str = "gustav",
+               password: str = None, turn: str = "off") -> None:
+    url = "https://" + deviceIp + "/settings/relay?turn=" + turn
+    r = requests.get(url, auth=(username, password))
+    print(r.status_code)
+    print()
+    print(r.json())
+    print("--------------------------------------------------------------------")
 
-        client = mqtt_client.Client(self.username)
 
-        if self.user_name and self.token:
-            client.username_pw_set(self.username, self.token)
+def switchBasicHTTP(deviceIp: str = "192.168.33.1", deviceId: str = None,
+                    model: str = "shellyplug-s", token: str = None,
+                    turn: str = "off") -> None:
+    url = "https://" + deviceIp + "/settings/relay?turn=" + turn
+    header = {"Authorization" : f"Basic {token}"}
+    r = requests.get(url, headers=header)
+    print(r.status_code)
+    print()
+    print(r.json())
+    print("--------------------------------------------------------------------")
 
-        client.on_connect = on_connect
-        client.connect(self.broker, self.port)
-        return client
 
-    def publishMqtt(message: str) -> bool:
-        #TODO
-        pass
+def getBasicSettingsHTTP(deviceIp: str = "192.168.33.1",
+                         model: str = "shellyplug-s") -> None:
+    url = "https://" + str(deviceIp) + "/shelly"
+    r = requests.get(url)
+    print(r.text)
+    print()
+    print(r.json())
+    print("--------------------------------------------------------------------")
+    return
+
+
+def testMQTT() -> None:
+    client = connect(username="gustav",
+                     broker="mqtt.eclipseprojects.io",
+                     port=1883)
+    for i in range(30):
+        print(f"publishing message #{i}")
+        publish(client, "shellies/shellyplug-s<deviceId>/relay/0", turn=None)
+        time.sleep(3)
+    return
+
+
+def testHTTP() -> None:
+    print("basic settings:")
+    getBasicSettingsHTTP()
+
 
 
 def main():
@@ -87,25 +108,12 @@ def main():
         hostname in the form of:
             shelly<model>-XXXXXXXXXXXX
     """
-    #connection = ShellyMQTT(broker="mqtt.eclipseprojects.io", topic="TEST", user="gustav")
-    #connection.switchMQTT(turn="on")
-
-
-    mqttBroker ="mqtt.eclipseprojects.io"
-    client = mqtt.Client("Temperature_Inside")
-
-    def on_connect():
-        print("connection ye")
-
-    client.on_connect = on_connect
-    client.connect(mqttBroker)
-
-    def on_publish():
-        print("damn, finally a respose")
-
-    client.on_pubish = on_publish
-    client.publish("TEMPERATURE", "testing birh")
+    # testMQTT()
+    testHTTP()
 
 
 if __name__ == "__main__":
     main()
+
+
+

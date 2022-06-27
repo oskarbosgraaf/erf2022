@@ -5,7 +5,7 @@
 #define trigPin3 6
 #define echoPin3 7
 
-long duration, distance, Sensor1, Sensor2, Sensor3;
+long duration, distance, SensorRight, SensorFront, SensorLeft;
 
 void setup()
 {
@@ -20,17 +20,17 @@ pinMode(echoPin3, INPUT);
 
 void loop() {
 SonarSensor(trigPin1, echoPin1);
-Sensor1 = distance;
+SensorRight = distance;
 SonarSensor(trigPin2, echoPin2);
-Sensor2 = distance;
+SensorFront = distance;
 SonarSensor(trigPin3, echoPin3);
-Sensor3 = distance;
+SensorLeft = distance;
 
-Serial.print(Sensor3);
+Serial.print(SensorLeft);
 Serial.print(" - ");
-Serial.print(Sensor2);
+Serial.print(SensorFront);
 Serial.print(" - ");
-Serial.println(Sensor1);
+Serial.println(SensorRight);
 }
 
 
