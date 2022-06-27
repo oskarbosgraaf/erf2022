@@ -19,6 +19,8 @@ class FollowBlob():
         self.move(0.2, 0, 0.1)
     
     def decideBehavior(self, cam):
+        print(f'video blob direction {cam.video_blob_direction()}' )
+        # cam.show_video_blob()
         if cam.video_blob_direction() == 'adjustright':
             self.adjust_right()
         elif cam.video_blob_direction() == 'adjustleft':
@@ -40,6 +42,7 @@ if __name__ == '__main__':
     rospy.init_node('FollowBlob', anonymous=False)
     print( " === Starting Program === " )
     fb = FollowBlob()
-    while True:
+    for i in range(100):
         cam = camera.Camera(cv2.VideoCapture(1,cv2.CAP_DSHOW))
+        cv2.VideoCapture(1,cv2.CAP_DSHOW)
         fb.decideBehavior(cam)
