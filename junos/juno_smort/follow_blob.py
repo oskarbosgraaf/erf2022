@@ -25,15 +25,10 @@ class FollowBlob():
         self.move(0.1, -0.25, 0.1)
 
     def move_forward(self):
-        self.move(0.1, 0.0, 0.1)
+        self.move(0.5, 0.0, 0.1)
     
     def turn(self):
-        self.move(0, -0.5, 0.1)
-    
-    def decideBehavior(self, behavior):
-        
-        if behavior == 0:
-            print(('left'), 0.1)
+        self.move(0, 0.2, 0.1)
     
     def decideBehavior(self, behavior):
         

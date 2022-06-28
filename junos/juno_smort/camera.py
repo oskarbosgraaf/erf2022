@@ -22,10 +22,12 @@ class Camera:
 
     def one_big_rect(self, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
-        orange = cv2.medianBlur(orange, 5)
+        # orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
+        # orange = cv2.medianBlur(orange, 5)
         result = image.copy()
-        contours = cv2.findContours(orange, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        sensitivity = 30
+        green = cv2.inRange(hsv,(60 - sensitivity, 100, 100),(60 + sensitivity, 255, 255)) 
+        contours = cv2.findContours(green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if len(contours) == 2 else contours[1]
 
         boxes = []
@@ -65,6 +67,9 @@ class Camera:
 
     def video_blob_direction(self):
         # 0 voor ubuntu logitech camera (Sien)
+        # 1, error vindt niet
+        # 0 webcam lap
+        # -1 webcam lap
         self.video = cv2.VideoCapture(0,cv2.CAP_V4L2)
         # print('thanks')
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -83,7 +88,7 @@ class Camera:
                 # print(f'centerX = {centerX}')
                 # print(f'frame shape = {frame.shape}')
                 if frame is None:
-                    print('no orange: turn')
+                    print('no green: turn')
                     self.behavior = 5
                     fb.decideBehavior(self.behavior)
                     continue
