@@ -10,27 +10,20 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Float32
 from corridor import Corridor
 from std_msgs.msg import Bool
+import serial
+import time
 
-# # print with timestamp
-# def print2( stuff ):
-#     fulltime = str(datetime.datetime.now())
-#     dateandtime = fulltime.split( '.', 1)[0]
-#     time = dateandtime.split(' ', 1)[1]
-    # print( str(time) + " " + str(stuff) )
+
 
 class WallFollow:
     def __init__( self ):
         print('in init')
         self.name = "Wall_Follow_Node"
 
-        self.pubber = rospy.Publisher("/client/cmd_vel", Twist, queue_size=10)
-        self.sub = rospy.Subscriber('client_scan/scan', LaserScan, self.LaserToSonar)
+        # self.pubber = rospy.Publisher("/client/cmd_vel", Twist, queue_size=10)
+        # self.sub = rospy.Subscriber('client_scan/scan', LaserScan, self.LaserToSonar)
 
-        # subscription for sonar
-        """
-        rospy.Subscriber('/sonar_dist2',Float32, self.read_f)
-        rospy.Subscriber('/sonar_dist3',Float32, self.read_r)
-        """
+        self.ser = serial.Serial('/dev/ttyACM0', 9800, timeout=1)
 
         # self.left = None
         self.front = None
@@ -53,29 +46,19 @@ class WallFollow:
         self.backward_done = False
         self.countdown = 60
 
-        # rospy.on_shutdown(self.stop)
-    
-    # def Wait(self, msg):
-    #     if msg.data == False:
-    #         sel>f.sub = rospy.Subscriber('client_scan/scan', LaserScan, self.LaserToSonar)
-    #     elif msg.data == True:
-    #         msg = Twist()
-    #         msg.linear.x = lin_vel
-    #         msg.angular.z = ang_vel
-    #         # cmd1 = Twist2DStamped(v=lin_vel, omega=-ang_vel)
-    #         self.pubber.publish(msg)
-    #         self.sub.unregister()
-    
-    def LaserToSonar(self, msg):
-        self.last_right = self.right
-        self.lastfront = self.front
-        self.data = [max(max(msg.ranges[355:359]), max(msg.ranges[0:5])), msg.ranges[270], msg.ranges[90]]
-        self.front = max(msg.ranges[0:5])
-        self.right = msg.ranges[270]
-        self.left = msg.ranges[90]
+        self.data = [0,0,0]
 
-        #print(f'data: {self.data}')
-
+    def read(self):
+        try:
+            line = self.ser.readline()   # read a byte
+            if line:
+                self.data = [int(word) for word in line.split() if word.isdigit()]
+                if len(self.data) != 3:
+                    return self.read()
+                print(self.data)
+        except:
+            print( "error in message: converting" )
+            return self.read() # try again
         # if corridor.act and self.backward_done == False:
         #     self.move_backward()
         # elif corridor.act and self.backward_done:
@@ -86,20 +69,15 @@ class WallFollow:
             self.follow_wall_r()
         else:
             self.follow_wall_l()
-
-    # read the sonar distances
-    """
-    def read_l(self, msg):
-        self.left = msg.data
-
-    def read_f(self, msg):
-        self.front = msg.data
-    
-    def read_r(self, msg):
-        self.right = msg.data
-    """
-
+        
+ 
     def follow_wall_r(self):
+        self.last_right = self.right
+        self.lastfront = self.front
+        self.front = self.data[0]
+        self.right =self.data[1]
+        self.left = self.data[2]
+
         F_plus = self.data[0] > self.distF
         F_min = self.data[0] < self.distF
 
@@ -233,8 +211,9 @@ class WallFollow:
         self.backward_done = True
 
 if __name__ == '__main__':
-    rospy.init_node('wall_follow_sonar', anonymous=False)
+    # rospy.init_node('wall_follow_sonar', anonymous=False)
     print( " === Starting Program === " )
     corridor = Corridor()
     wf = WallFollow()
-    rospy.spin()
+    wf.read()
+    # rospy.spin()
