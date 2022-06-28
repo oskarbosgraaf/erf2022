@@ -27,9 +27,17 @@ class Camera:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         # orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
         # orange = cv2.medianBlur(orange, 5)
-        orange = cv2.inRange(hsv,(100, 150, 0), (140, 255, 255))
+        # original wat werkte
+        # green = cv2.inRange(hsv,(65, 50, 50),(77,255,255))
+
+        # probeersel verberteren
+        sensitivity = 30
+        green = cv2.inRange(hsv,(60 - sensitivity, 100, 100),(60 + sensitivity, 255, 255)) 
+
+        # misschien net beter idk
+        # green = cv2.inRange(hsv,(65, 50, 100),(77,255,255))
         result = image.copy()
-        contours = cv2.findContours(orange, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours = cv2.findContours(green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if len(contours) == 2 else contours[1]
 
         boxes = []

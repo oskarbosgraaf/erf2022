@@ -28,7 +28,9 @@ class Camera:
         # orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
         # orange = cv2.medianBlur(orange, 5)
         # green = cv2.inRange(hsv,(75, 150, 105), (90, 165, 120))
-        green = cv2.inRange(hsv,(65, 50, 50),(77,255,255))
+        # green = cv2.inRange(hsv,(65, 50, 50),(77,255,255))
+        sensitivity = 30
+        green = cv2.inRange(hsv,(60 - sensitivity, 100, 100),(60 + sensitivity, 255, 255)) 
         # orange = cv2.inRange(hsv,(100, 150, 0), (140, 255, 255))
         result = image.copy()
         contours = cv2.findContours(green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
