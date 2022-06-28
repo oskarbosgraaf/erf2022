@@ -10,7 +10,7 @@ class FollowBlob():
         rospy.init_node('FollowBlob', anonymous=False)
         self.pub = rospy.Publisher("/client/cmd_vel", Twist, queue_size=10)
         msg = Twist()
-        msg.linear = 0.2
+        msg.linear.x = 0.2
         self.pub.publish(msg)
 
     def adjust_left(self):
