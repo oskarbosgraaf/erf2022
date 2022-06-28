@@ -1,4 +1,3 @@
-
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
@@ -10,7 +9,7 @@ import rospy
 # from turtlebot.camera_movement.main import FollowBlob
 
 fb = follow_blob.FollowBlob()
-warnings.filterwarnings('ignore')
+# warnings.filterwarnings('ignore')
 
 class Camera:
     def __init__(self):
@@ -26,8 +25,9 @@ class Camera:
 
     def one_big_rect(self, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
-        orange = cv2.medianBlur(orange, 5)
+        # orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
+        # orange = cv2.medianBlur(orange, 5)
+        orange = cv2.inRange(hsv,(100, 150, 0), (140, 255, 255))
         result = image.copy()
         contours = cv2.findContours(orange, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if len(contours) == 2 else contours[1]
@@ -74,7 +74,7 @@ class Camera:
 
     def video_blob_direction(self):
         # 0 voor ubuntu logitech camera (Sien)
-        self.video = cv2.VideoCapture(0,cv2.CAP_V4L2)
+        self.video = cv2.VideoCapture(-1 ,cv2.CAP_V4L2)
         # print('thanks')
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
         # height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
