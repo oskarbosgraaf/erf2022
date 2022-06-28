@@ -71,6 +71,18 @@ def switchBasicHTTP(deviceIp: str = "192.168.33.1", deviceId: str = None,
     print("--------------------------------------------------------------------")
 
 
+def switchAuthHTTP(deviceIp: str = "192.168.33.1", deviceId: str = None,
+                   model: str = "shellyplug-s", username: str = "gustav",
+                   password: str = None, turn: str = "off") -> None:
+    url = "https://" + deviceIp + "/settings/relay?turn=", + turn
+    r = requests.get(url, auth=(username, password))
+    print(r.status_code)
+    print()
+    print(r.json())
+    print("--------------------------------------------------------------------")
+
+
+
 def getBasicSettingsHTTP(deviceIp: str = "192.168.33.1",
                          model: str = "shellyplug-s") -> None:
     url = "https://" + str(deviceIp) + "/shelly"
