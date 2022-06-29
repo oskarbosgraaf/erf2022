@@ -2,7 +2,7 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-# import follow_blob
+import follow_blob
 
 fb = follow_blob.FollowBlob()
 
@@ -52,60 +52,6 @@ class Camera:
         RGB_result = result
         return RGB_result, self.centerX
 
-    def show_video_blob(self):
-        self.video = cv2.VideoCapture(0)
-
-        while(self.video.isOpened()):
-            ret, frame = self.video.read()
-            if ret == True:
-                frame, _ = self.one_big_rect(frame)
-                cv2.imshow('Frame',frame)
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    break
-            else:
-                break
-        self.video.release()
-        cv2.destroyAllWindows()
-
-    # Onderstaande is de functie is voor blob detection en welke kant hij opgestuurd moet worden
-    def juno_detection(self):
-        self.video = cv2.VideoCapture(0)
-
-        self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
-        
-        counter = 0
-
-        while(self.video.isOpened()):
-            ret, frame = self.video.read()
-            if ret == True:
-                frame, self.centerX = self.one_big_rect('blue', frame)
-                if frame is None:
-                    print('no blue: no lights')
-                    counter = 0
-                    self.behavior = 6
-                    fb.decideBehavior(self.behavior)
-                    continue
-
-                else:
-                    cv2.imshow('Frame',frame)
-                
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    break
-
-            else:
-                print('ret is false')
-                return None
-
-            counter += 1 
-            print('blue')
-
-            if counter == 30:
-                self.behavior = 6
-                fb.decideBehavior(self.behavior)
-
-
-        
-
     def video_blob_direction(self):
         # 0 voor ubuntu logitech camera (Sien)
         # 1, error vindt niet
@@ -113,17 +59,33 @@ class Camera:
         # -1 webcam lap
         # 4 op laptop jurgens
         # self.video = cv2.VideoCapture(-1,cv2.CAP_V4L2)
-
+        
         # voor thijmens laptop
         self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
+        blue_counter = 0
+
         while(self.video.isOpened()):
             ret, frame = self.video.read()
             if ret == True:
-                frame, self.centerX = self.one_big_rect('green', frame)
-                if frame is None:
+                frame_green, self.centerX = self.one_big_rect('green', frame)
+                frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
+
+                if frame_blue is None:
+                    # reset blue counter
+                    blue_counter = 0 
+               
+                else: 
+                    blue_counter += 1
+                    
+                if blue_counter == 30:
+                    blue_counter = 0
+                    self.behavior = 6
+                    fb.decideBehavior(self.behavior)
+
+                if frame_green is None:
                     print('no green: turn')
                     self.behavior = 5
                     if corridor.other_in_corridor:
@@ -131,9 +93,12 @@ class Camera:
                     else:
                         fb.decideBehavior(self.behavior)
                     continue
+                    
+                
 
                 else:
-                    cv2.imshow('Frame',frame)
+                    cv2.imshow('Frame',frame_green)
+    
                 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
