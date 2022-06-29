@@ -33,23 +33,18 @@ class FollowBlob():
     def decideBehavior(self, behavior):
         
         if behavior == 0:
-            print('left')
             self.left()
         
         elif behavior == 1:
-            print('adjust left')
             self.adjust_left()
         
         elif behavior == 2:
-            print('move forward')
             self.move_forward()
 
         elif behavior == 3:
-            print('adjust right')
             self.adjust_right()
 
         elif behavior == 4:
-            print('right')
             self.right()
         
         elif behavior == 5:
@@ -60,11 +55,9 @@ class FollowBlob():
             return None
 
     def move(self, lin, ang, dur):
-        print('in move')
         msg = Twist()
         msg.linear.x = lin
         msg.angular.z = ang
         self.pub.publish(msg)
-        # print(f'msg = {msg}')
         rospy.sleep(dur)
 
