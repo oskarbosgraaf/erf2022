@@ -2,10 +2,11 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-# import follow_blob
+import follow_blob
+from camera_corridor import Corridor
+fb = follow_blob.FollowBlob()
 
-# fb = follow_blob.FollowBlob()
-
+corridor = Corridor()
 
 class Camera:
     def __init__(self):
@@ -51,7 +52,7 @@ class Camera:
         if color_string == 'green' and size_blob > 1382000:
             # stop
             self.behavior = 7
-            # fb.decideBehavior(self.behavior)
+            fb.decideBehavior(self.behavior)
             # print("JUNO CLOSE")
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
@@ -64,10 +65,10 @@ class Camera:
         # 0 webcam lap
         # -1 webcam lap
         # 4 op laptop jurgens
-        # self.video = cv2.VideoCapture(-1,cv2.CAP_V4L2)
+        self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
         
         # voor thijmens laptop
-        self.video = cv2.VideoCapture(0)
+        # self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
@@ -81,26 +82,26 @@ class Camera:
 
                 if frame_blue is None:
                     # reset blue counter
-                    # print('no blue')
+                    print('no blue')
                     blue_counter = 0 
 
                 else: 
                     blue_counter += 1
-                    # print('blue')
+                    print('blue')
                     
-                if blue_counter == 30:
+                if blue_counter == 5:
                     blue_counter = 0
-                    # print("RESET")
+                    print("RESET")
                     self.behavior = 6
-                    # fb.decideBehavior(self.behavior)
+                    fb.decideBehavior(self.behavior)
 
                 if frame_green is None:
                     print('no green: turn')
                     self.behavior = 5
-                    # if corridor.other_in_corridor:
-                    #     fb.wait()
-                    # else:
-                    #     fb.decideBehavior(self.behavior)
+                    if corridor.other_in_corridor:
+                        fb.wait()
+                    else:
+                        fb.decideBehavior(self.behavior)
                     continue
                     
                 
@@ -141,9 +142,9 @@ class Camera:
                 print('right')
                 self.behavior = 4
 
-            # if corridor.other_in_corridor:
-            #     fb.wait()
-            # else:
-            #     fb.decideBehavior(self.behavior)
+            if corridor.other_in_corridor:
+                fb.wait()
+            else:
+                fb.decideBehavior(self.behavior)
 
         self.video.release()
