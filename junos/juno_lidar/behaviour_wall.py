@@ -9,7 +9,7 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from controller import PID
 from std_msgs.msg import Bool
-from corridor import Corridor    # def communicationCB(self, cor_msg):
+from lidar_corridor import Corridor    # def communicationCB(self, cor_msg):
     #     if client:
     #         if cor_msg.data == True:
     #             self.o_in_cor = True
