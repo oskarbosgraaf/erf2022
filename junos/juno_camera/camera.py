@@ -1,10 +1,8 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-import time
 import follow_blob
 from camera_corridor import Corridor
-import sys
 fb = follow_blob.FollowBlob()
 
 corridor = Corridor()
@@ -55,11 +53,8 @@ class Camera:
 
         # if color_string == 'green' and size_blob > 1382000:
         #     # stop
-        #     self.behavior = 8
-            # fb.decideBehavior(self.behavior)
-            # print("JUNO CLOSE")
-            # print(size_blob)
-
+        #     # ROSEXIT
+        
         #########
 
         distanceX = (960/(right-left)) * 60
@@ -90,36 +85,50 @@ class Camera:
                 frame_green, self.centerX = self.one_big_rect('green', frame)
                 frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
 
-                ### UNCOMMENT IF TIME
+                ###### UNCOMMENT IF TIME
 
-                if frame_blue is None:
-                    # reset blue counter
-                    print('no blue')
-                    no_blue_counter += 1
+                # # blue is not detected
+                # if frame_blue is None:
+                #     # reset blue counter
+                #     print('no blue')
+                #     no_blue_counter += 1
                 
 
-                    if no_blue_counter > 5 and last_blue:
-                        no_blue_counter = 0
-                        blue_counter = 0 
-                        last_blue = False
-                        print("LIGHTS OFF")
-                        self.behavior = 11
-                        fb.decideBehavior(11)
-                else: 
-                    blue_counter += 1
-                    no_blue_counter = 0
-                    # frame_blue_last = True
-                    print('blue')
+                #     if no_blue_counter > 5 and last_blue:
+                #         # reset counters
+                #         no_blue_counter = 0
+                #         blue_counter = 0 
 
-                    if blue_counter > 5 and not last_blue:
-                        blue_counter = 0
-                        no_blue_counter = 0
-                        last_blue = True
-                        print("LIGHTS ON")
-                        self.behavior = 10
-                        fb.decideBehavior(self.behavior)
+                #         # now we have not seen blue
+                #         last_blue = False
 
-                ###### 
+                #         print("LIGHTS OFF")
+
+                #         # activate behavior
+                #         self.behavior = 11
+                #         fb.decideBehavior(11)
+
+                # # blue is detected
+                # else: 
+                #     blue_counter += 1
+                #     no_blue_counter = 0
+                #     print('blue')
+
+                #     if blue_counter > 5 and not last_blue:
+                #         # reset counters
+                #         blue_counter = 0
+                #         no_blue_counter = 0
+
+                #         # now we have seen blue
+                #         last_blue = True
+
+                #         print("LIGHTS ON")
+
+                #         # activate behavior
+                #         self.behavior = 10
+                #         fb.decideBehavior(self.behavior)
+
+                #############
                 
                 if frame_green is not None:
                     cv2.imshow('Frame',frame_green)
@@ -177,6 +186,7 @@ class Camera:
                 # print('right')
                 self.behavior = 4
 
+            
             # if corridor.other_in_corridor:
             #     fb.wait()
             # else:
