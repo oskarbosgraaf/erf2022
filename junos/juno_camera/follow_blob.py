@@ -67,3 +67,4 @@ class FollowBlob():
         self.pub.publish(msg)
         # print(f'msg = {msg}')
         rospy.sleep(dur)
+
