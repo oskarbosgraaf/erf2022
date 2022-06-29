@@ -9,6 +9,29 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from controller import PID
 from std_msgs.msg import Bool
+from corridor import Corridor    # def communicationCB(self, cor_msg):
+    #     if client:
+    #         if cor_msg.data == True:
+    #             self.o_in_cor = True
+    #             self.o_passed_cor = True
+    #             if self.in_cor and self.backward:
+    #                     self.move_backward()
+
+    #         if self.in_cor and not self.o_passed_cor:
+    #             self.move_backward()
+    #         else:
+    #             self.o_in_cor = False
+        
+    # def move_backward(self):
+    #     self.backward = False
+
+    #     # dit voor een meter
+    #     rate = rospy.Rate(0.05)
+    #     msg = Twist()
+    #     msg.linear.x = -0.2
+    #     msg.angular.z = 0.0
+    #     self.drive_pub(msg)
+    #     rate.sleep()
 
 class WallFollower:
     # Import ROS parameters from the "params.yaml" file.
@@ -102,30 +125,6 @@ class WallFollower:
 
         return np.array(out_x), np.array(out_y)
 
-    # def communicationCB(self, cor_msg):
-    #     if client:
-    #         if cor_msg.data == True:
-    #             self.o_in_cor = True
-    #             self.o_passed_cor = True
-    #             if self.in_cor and self.backward:
-    #                     self.move_backward()
-
-    #         if self.in_cor and not self.o_passed_cor:
-    #             self.move_backward()
-    #         else:
-    #             self.o_in_cor = False
-        
-    # def move_backward(self):
-    #     self.backward = False
-
-    #     # dit voor een meter
-    #     rate = rospy.Rate(0.05)
-    #     msg = Twist()
-    #     msg.linear.x = -0.2
-    #     msg.angular.z = 0.0
-    #     self.drive_pub(msg)
-    #     rate.sleep()
-
 
     def LaserCb(self, scan_data):
 
@@ -211,5 +210,6 @@ class WallFollower:
 if __name__ == "__main__":
     print('program starts')
     rospy.init_node('wall_test', anonymous=True)
+    corridor = Corridor()
     wall_follower = WallFollower()
     rospy.spin()
