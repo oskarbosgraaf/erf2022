@@ -17,11 +17,11 @@ def switchPlug(toggle: str = None) -> None:
         url2 += "on"
 
     r1 = requests.get(url1)
-    time.sleep(.5)
+    # time.sleep(.5)
     r2 = requests.get(url2)
 
-    print(f"request1 {r1.json()}")
-    print(f"request2 {r2.json()}")
+    # print(f"request1 {r1.json()}")
+    # print(f"request2 {r2.json()}")
     return
 
 def main():

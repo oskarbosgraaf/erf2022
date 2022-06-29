@@ -4,6 +4,7 @@ import numpy as np
 import time
 import follow_blob
 from camera_corridor import Corridor
+import sys
 fb = follow_blob.FollowBlob()
 
 corridor = Corridor()
@@ -50,10 +51,11 @@ class Camera:
         cv2.rectangle(result, (left,top), (right,bottom), (255, 0, 0), 2)
         size_blob = (right - left) * (bottom - top)
         if color_string == 'green' and size_blob > 1382000:
-            # stop
-            self.behavior = 7
-            fb.decideBehavior(self.behavior)
-            # print("JUNO CLOSE")
+            time.sleep(5)
+            # self.behavior = 7
+            # fb.decideBehavior(self.behavior)
+            
+            
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
@@ -80,23 +82,25 @@ class Camera:
                 frame_green, self.centerX = self.one_big_rect('green', frame)
                 frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
 
+                
                 if frame_blue is None:
                     # reset blue counter
-                    print('no blue')
+                    # print('no blue')
                     blue_counter = 0 
 
                 else: 
                     blue_counter += 1
-                    print('blue')
+                    # print('blue')
                     
                 if blue_counter == 5:
                     blue_counter = 0
-                    print("RESET")
+                    # print("RESET")
                     self.behavior = 6
                     fb.decideBehavior(self.behavior)
+                    cv2.imshow('Frame',frame_blue)
 
                 if frame_green is None:
-                    print('no green: turn')
+                    # print('no green: turn')
                     self.behavior = 5
                     if corridor.other_in_corridor:
                         fb.wait()
@@ -118,28 +122,28 @@ class Camera:
                 return None
 
             if self.centerX < ((1/5)*self.width):
-                print('left')
+                # print('left')
                 self.behavior = 0
     
             
             if (self.centerX > (1/5)*self.width) and (self.centerX < (2/5)*self.width):
-                print('adjust left')
+                # print('adjust left')
                 self.behavior = 1
         
 
             if (self.centerX > (2/5)*self.width) and (self.centerX < (3/5)*self.width):
-                print('forward')
+                # print('forward')
                 self.behavior = 2
 
      
 
             if (self.centerX > (3/5)*self.width) and (self.centerX < (4/5)*self.width):
-                print('adjust right')
+                # print('adjust right')
                 self.behavior = 3
 
 
             if (self.centerX > ((4/5)*self.width)):
-                print('right')
+                # print('right')
                 self.behavior = 4
 
             if corridor.other_in_corridor:

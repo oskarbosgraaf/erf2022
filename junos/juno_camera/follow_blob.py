@@ -18,16 +18,16 @@ class FollowBlob():
         self.move(0.1, 0.15, 0.1)
     
     def left(self):
-        self.move(0.0, 0.15, 0.1)
+        self.move(0.1, 0.25, 0.1)
 
     def adjust_right(self):
         self.move(0.1, -0.15, 0.1)
 
     def right(self):
-        self.move(0.0, -0.15, 0.1)
+        self.move(0.1, -0.25, 0.1)
 
     def move_forward(self):
-        self.move(0.5, 0.0, 0.1)
+        self.move(0.1, 0.0, 0.1)
     
     def turn(self):
         self.move(0, 0.2, 0.1)
@@ -36,10 +36,12 @@ class FollowBlob():
         self.move(0, 0, 0.2)
     
     def stop(self):
-        self.move(0, 0, 0)
+        self.move(0, 0, 3)
+        # time.sleep(5)
+
 
     def lights(self):
-        shelly.switchPlug("on")
+        shelly.switchPlug('on')
         time.sleep(5)
         shelly.switchPlug("off")
 
