@@ -7,7 +7,7 @@ import rospy
 from rospy.numpy_msg import numpy_msg
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
-# from controller import PID
+from controller import PID
 from std_msgs.msg import Bool
 
 class WallFollower:
@@ -19,8 +19,8 @@ class WallFollower:
     SCAN_TOPIC = "/scan"
     DRIVE_TOPIC = "cmd_vel"
     SIDE = -1 # -1 right is and +1 is left
-    VELOCITY = 0.2
-    DESIRED_DISTANCE = 0.3
+    VELOCITY = 0.05
+    DESIRED_DISTANCE = 0.6
     COR_DIST = 1.5
 
 
@@ -30,17 +30,19 @@ class WallFollower:
         #   Publishes to  drive topic - to move the vehicle.
         # Initialize subscriber to laser scan.
 
-        rospy.Subscriber(self.SCAN_TOPIC, LaserScan, self.LaserCb)
+        # print('in init') 
+        
+        rospy.Subscriber('/scan', LaserScan, self.LaserCb)
 
         self.drive_pub = rospy.Publisher(self.DRIVE_TOPIC, Twist, queue_size = 10)
 
-        if master:
-            rospy.Subscriber(self.COM_TOPIC_CM, Bool, self.CommunicationCb)
-            self.com_pub = rospy.Publisher(self.COM_TOPIC_MC, Bool, queue_size = 10)
+        # if master:
+        #     rospy.Subscriber(self.COM_TOPIC_CM, Bool, self.CommunicationCb)
+        #     self.com_pub = rospy.Publisher(self.COM_TOPIC_MC, Bool, queue_size = 10)
         
-        if client:
-            rospy.Subscriber(self.COM_TOPIC_MC, Bool, self.CommunicationCb)
-            self.com_pub = rospy.Publisher(self.COM_TOPIC_CM, Bool, queue_size = 10)
+        # if client:
+        #     rospy.Subscriber(self.COM_TOPIC_MC, Bool, self.CommunicationCb)
+        #     self.com_pub = rospy.Publisher(self.COM_TOPIC_CM, Bool, queue_size = 10)
 
 
         # Variables to keep track of drive commands being sent to robot.
@@ -100,32 +102,33 @@ class WallFollower:
 
         return np.array(out_x), np.array(out_y)
 
-    def communicationCB(self, cor_msg):
-        if client:
-            if cor_msg.data == True:
-                self.o_in_cor = True
-                self.o_passed_cor = True
-                if self.in_cor and self.backward:
-                        self.move_backward()
+    # def communicationCB(self, cor_msg):
+    #     if client:
+    #         if cor_msg.data == True:
+    #             self.o_in_cor = True
+    #             self.o_passed_cor = True
+    #             if self.in_cor and self.backward:
+    #                     self.move_backward()
 
-            if self.in_cor and not self.o_passed_cor:
-                self.move_backward()
-            else:
-                self.o_in_cor = False
+    #         if self.in_cor and not self.o_passed_cor:
+    #             self.move_backward()
+    #         else:
+    #             self.o_in_cor = False
         
-    def move_backward(self):
-        self.backward = False
+    # def move_backward(self):
+    #     self.backward = False
 
-        # dit voor een meter
-        rate = rospy.Rate(0.05)
-        msg = Twist()
-        msg.linear.x = -0.2
-        msg.angular.z = 0.0
-        self.drive_pub(msg)
-        rate.sleep()
+    #     # dit voor een meter
+    #     rate = rospy.Rate(0.05)
+    #     msg = Twist()
+    #     msg.linear.x = -0.2
+    #     msg.angular.z = 0.0
+    #     self.drive_pub(msg)
+    #     rate.sleep()
 
 
     def LaserCb(self, scan_data):
+        # print('in laser')
         # This function is called every time we get a laser scan.
 
         # This is the plan:
@@ -146,7 +149,7 @@ class WallFollower:
         angle_min = scan_data.angle_min
         angle_max = scan_data.angle_max
         ranges = scan_data.ranges
-        if (ranges[90] + ranges[270]) < COR_DIST:
+        if (ranges[90] + ranges[270]) < self.COR_DIST:
             self.in_cor = True
         # Get data for side ranges. Add to buffer.
         wall_coords_local = self.GetLocalSideWallCoords(ranges, angle_min, angle_max, angle_step)
@@ -178,8 +181,12 @@ class WallFollower:
             # Distance to wall is (th.T dot x_0 + th_0)/(norm(th))
             dist_to_wall = abs(c/np.linalg.norm(th))
 
+            print(f'dist_to_wall: {dist_to_wall}')
+
             # Angle between heading and wall.
             angle_to_wall = math.atan2(m, 1)
+
+            print(f'angle to wall {angle_to_wall}')
 
             # Clear scan buffers.
             self.point_buffer_x_=np.array([])
@@ -202,7 +209,7 @@ class WallFollower:
             drive_msg.linear.x = self.VELOCITY
             if scan_data.ranges[0] < 0.6:
                 drive_msg.linear.x = 0.1
-            drive_msg.angular.z = 2*steer
+            drive_msg.angular.z = 0.5*steer
             if scan_data.ranges[0] < 0.6:
                 if drive_msg.angular.z < 0:
                     if drive_msg.angular.z > -0.1:
@@ -222,14 +229,15 @@ class WallFollower:
             # drive_msg.drive.speed = self.VELOCITY
             # drive_msg.drive.acceleration = 1
             # drive_msg.drive.acceleration = 0.5
-            if not self.o_in_cor and self.o_passed_cor:
-                self.drive_pub.publish(drive_msg)
+            # if not self.o_in_cor and self.o_passed_cor:
+
+
+            print(drive_msg)
+            self.drive_pub.publish(drive_msg)
     
 
 if __name__ == "__main__":
-    if master: 
-        rospy.init_node('wall_follower_master')
-    if client:
-        rospy.init_node('wall_follower_client')
+    print('program starts')
+    rospy.init_node('wall_test', anonymous=True)
     wall_follower = WallFollower()
     rospy.spin()
