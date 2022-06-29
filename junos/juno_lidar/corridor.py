@@ -4,7 +4,7 @@ from std_msgs.msg import Bool
 
 
 class Corridor:
-    def init(self):
+    def __init__(self):
         self.cor_dist = 1.0
         rospy.Subscriber('/scan', LaserScan, self.Lidar_cb)
         self.pub = rospy.Publisher('in_corridor_MC', Bool, queue_size=5)
