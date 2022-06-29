@@ -50,10 +50,9 @@ class Camera:
         size_blob = (right - left) * (bottom - top)
         if color_string == 'green' and size_blob > 1382000:
             # stop
-            self.behavior = 8
+            self.behavior = 7
             # fb.decideBehavior(self.behavior)
             # print("JUNO CLOSE")
-            print(size_blob)
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
@@ -84,7 +83,7 @@ class Camera:
                     # reset blue counter
                     # print('no blue')
                     blue_counter = 0 
-               
+
                 else: 
                     blue_counter += 1
                     # print('blue')
