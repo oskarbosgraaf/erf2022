@@ -4,7 +4,7 @@ import numpy as np
 import time
 # import follow_blob
 
-# fb = follow_blob.FollowBlob()
+fb = follow_blob.FollowBlob()
 
 
 class Camera:
@@ -82,8 +82,8 @@ class Camera:
                 if frame is None:
                     print('no blue: no lights')
                     counter = 0
-                    # self.behavior = 5
-                    # fb.decideBehavior(self.behavior)
+                    self.behavior = 6
+                    fb.decideBehavior(self.behavior)
                     continue
 
                 else:
@@ -98,7 +98,7 @@ class Camera:
 
             counter += 1 
             print('blue')
-            
+
             if counter == 30:
                 self.behavior = 6
                 fb.decideBehavior(self.behavior)
@@ -126,7 +126,10 @@ class Camera:
                 if frame is None:
                     print('no green: turn')
                     self.behavior = 5
-                    # fb.decideBehavior(self.behavior)
+                    if corridor.other_in_corridor:
+                        fb.wait()
+                    else:
+                        fb.decideBehavior(self.behavior)
                     continue
 
                 else:
@@ -164,6 +167,9 @@ class Camera:
                 # print('right')
                 self.behavior = 4
 
-            # fb.decideBehavior(self.behavior)
+            if corridor.other_in_corridor:
+                fb.wait()
+            else:
+                fb.decideBehavior(self.behavior)
 
         self.video.release()
