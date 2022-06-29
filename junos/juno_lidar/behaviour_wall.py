@@ -9,64 +9,25 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from controller import PID
 from std_msgs.msg import Bool
-from lidar_corridor import Corridor    # def communicationCB(self, cor_msg):
-    #     if client:
-    #         if cor_msg.data == True:
-    #             self.o_in_cor = True
-    #             self.o_passed_cor = True
-    #             if self.in_cor and self.backward:
-    #                     self.move_backward()
-
-    #         if self.in_cor and not self.o_passed_cor:
-    #             self.move_backward()
-    #         else:
-    #             self.o_in_cor = False
-        
-    # def move_backward(self):
-    #     self.backward = False
-
-    #     # dit voor een meter
-    #     rate = rospy.Rate(0.05)
-    #     msg = Twist()
-    #     msg.linear.x = -0.2
-    #     msg.angular.z = 0.0
-    #     self.drive_pub(msg)
-    #     rate.sleep()
+from lidar_corridor import Corridor    
+import time
 
 class WallFollower:
-    # Import ROS parameters from the "params.yaml" file.
-    # Access these variables in class functions with self:
-    # i.e. self.CONSTANT
     COM_TOPIC_CM = "client_master"
     COM_TOPIC_MC = "master_client"
     SCAN_TOPIC = "/scan"
-    DRIVE_TOPIC = "cmd_vel"
+    DRIVE_TOPIC = "/cmd_vel"
     SIDE = -1 # -1 right is and +1 is left
-    VELOCITY = 0.05
+    VELOCITY = 0.08
     DESIRED_DISTANCE = 0.6
     COR_DIST = 1.5
 
-
     def __init__(self):
-        # Create a node that 
-        #   Subscribes to the laser scan topic,
-        #   Publishes to  drive topic - to move the vehicle.
-        # Initialize subscriber to laser scan.
+        print('in init')
 
-        # print('in init') 
-        
         rospy.Subscriber('/scan', LaserScan, self.LaserCb)
 
         self.drive_pub = rospy.Publisher(self.DRIVE_TOPIC, Twist, queue_size = 10)
-
-        # if master:
-        #     rospy.Subscriber(self.COM_TOPIC_CM, Bool, self.CommunicationCb)
-        #     self.com_pub = rospy.Publisher(self.COM_TOPIC_MC, Bool, queue_size = 10)
-        
-        # if client:
-        #     rospy.Subscriber(self.COM_TOPIC_MC, Bool, self.CommunicationCb)
-        #     self.com_pub = rospy.Publisher(self.COM_TOPIC_CM, Bool, queue_size = 10)
-
 
         # Variables to keep track of drive commands being sent to robot.
         self.seq_id = 0
@@ -88,10 +49,21 @@ class WallFollower:
 
         self.pid = PID()
 
-        self.in_cor = False
-        self.o_in_cor = False
-        self.o_passed_cor = False
-    
+        # self.in_cor = False
+        # self.o_in_cor = False
+        # self.o_passed_cor = False
+
+        self.checkin_corridor = False
+        self.checkout_corridor = True
+
+        self.never_corridor = True
+        self.once_corridor = False
+        self.twice_corridor = False
+
+        self.turn_done = False
+        self.stop_done = False
+        self.count_follow = 0
+
     def GetLocalSideWallCoords(self, ranges, angle_min, angle_max, angle_step):
         # Slice out the interesting samples from our scan. pi/2 radians from pi/4 to (pi - pi/4) radians for the right side.
         positive_start_angle = self.side_angle_window_fwd_
@@ -128,6 +100,8 @@ class WallFollower:
 
     def LaserCb(self, scan_data):
 
+
+        # print('in laserCB')
         angle_step = scan_data.angle_increment
         angle_min = scan_data.angle_min
         angle_max = scan_data.angle_max
@@ -164,12 +138,12 @@ class WallFollower:
             # Distance to wall is (th.T dot x_0 + th_0)/(norm(th))
             dist_to_wall = abs(c/np.linalg.norm(th))
 
-            print(f'dist_to_wall: {dist_to_wall}')
+            # print(f'dist_to_wall: {dist_to_wall}')
 
             # Angle between heading and wall.
             angle_to_wall = math.atan2(m, 1)
 
-            print(f'angle to wall {angle_to_wall}')
+            # print(f'angle to wall {angle_to_wall}')
 
             # Clear scan buffers.
             self.point_buffer_x_=np.array([])
@@ -187,12 +161,12 @@ class WallFollower:
             # drive_msg.header.seq = self.seq_id
             # self.seq_id += 1
 
-            # Populate the command itself.
+            # Populate the command itself
 
             drive_msg.linear.x = self.VELOCITY
             if scan_data.ranges[0] < 0.6:
                 drive_msg.linear.x = 0.1
-            drive_msg.angular.z = 0.5*steer
+            drive_msg.angular.z = 0.3*steer
             if scan_data.ranges[0] < 0.6:
                 if drive_msg.angular.z < 0:
                     if drive_msg.angular.z > -0.1:
@@ -203,8 +177,50 @@ class WallFollower:
             if drive_msg.angular.z > 1.8:
                 drive_msg.angular.z = drive_msg.angular.z * 0.8
 
-            # if not self.o_in_cor and self.o_passed_cor:
+            # print(drive_msg)
+            # if not self.stop_done:
             self.drive_pub.publish(drive_msg)
+
+
+            if corridor.in_corridor and not self.once_corridor:
+                print('passed first corridor')
+                self.once_corridor = True
+
+            if (corridor.in_corridor and self.once_corridor) and not self.twice_corridor:
+                print('passed second corridor')
+                self.twice_corridor = True
+            
+            if (self.once_corridor and not corridor.in_corridor) and not self.turn_done:
+                print('follow wall for x seconds')
+                # follow wall for X seconds
+
+                self.count_follow += 1
+
+                # if self.count_follow > 10000:
+                #     print('180 degrees turn')
+                #     # turn 180 degrees
+                #     msg = Twist()
+                #     msg.linear.x = 0.0
+                #     msg.angular.z = 2.0
+                #     self.turn_done = True
+                #     self.count_follow = 0
+                    # follow wall again
+
+            if (self.twice_corridor and not corridor.in_corridor) and not self.stop_done:
+                # follow wall for X seconds
+                # stop
+                print('follow wall for x seconds')
+                # self.count_follow += 1
+
+                # if self.count_follow > 10000:
+                #     print('stop')
+                #     # turn 180 degrees
+                #     msg = Twist()
+                #     msg.linear.x = 0.0
+                #     msg.angular.z = 0.0
+                #     self.stop_done = True
+                    # self.count_follow = 0
+                    # follow wall again
     
 
 if __name__ == "__main__":
