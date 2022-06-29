@@ -5,7 +5,7 @@ from std_msgs.msg import Bool
 
 class Corridor:
     def __init__(self):
-        self.cor_dist = 1.0
+        self.cor_dist = 2.0
         rospy.Subscriber('/scan', LaserScan, self.Lidar_cb)
         self.pub = rospy.Publisher('in_corridor_MC', Bool, queue_size=5)
         self.in_corridor = False
@@ -13,8 +13,8 @@ class Corridor:
 
 
     def Lidar_cb(self, msg):
-        front_left  = min(msg.ranges[80:100])
-        front_right = min(msg.ranges[260:280])
+        front_left  = min(msg.ranges[227:347])
+        front_right = min(msg.ranges[800:920])
 
         if (front_left + front_right) < self.cor_dist and self.count <= 10:
             self.count += 1
