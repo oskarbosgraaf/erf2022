@@ -2,12 +2,12 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-# import follow_blob
-# from camera_corridor import Corridor
+import follow_blob
+from camera_corridor import Corridor
 import sys
-# fb = follow_blob.FollowBlob()
+fb = follow_blob.FollowBlob()
 
-# corridor = Corridor()
+corridor = Corridor()
 
 class Camera:
     def __init__(self):
@@ -51,11 +51,11 @@ class Camera:
         cv2.rectangle(result, (left,top), (right,bottom), (255, 0, 0), 2)
         size_blob = (right - left) * (bottom - top)
         if color_string == 'green' and size_blob > 1382000:
-            # stop
-            self.behavior = 8
+            time.sleep(5)
+            # self.behavior = 7
             # fb.decideBehavior(self.behavior)
-            # print("JUNO CLOSE")
-            print(size_blob)
+
+
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
@@ -67,14 +67,14 @@ class Camera:
         # 0 webcam lap
         # -1 webcam lap
         # 4 op laptop jurgens
-        # self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
+        self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
 
         # voor thijmens laptop
-        self.video = cv2.VideoCapture(0)
+        # self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
-        # frame_blue_last = False
+        frame_blue_last = False
         blue_counter = 0
 
         while(self.video.isOpened()):
@@ -87,46 +87,37 @@ class Camera:
                 if frame_blue is None:
                     # reset blue counter
                     # print('no blue')
-                    blue_counter = 0 
-               
-                else: 
+                    blue_counter = 0
+
+                else:
                     blue_counter += 1
-                    # frame_blue_last = True
+                    frame_blue_last = True
                     # print('blue')
 
                 if blue_counter == 8:
                     blue_counter = 0
                     # print("RESET")
                     self.behavior = 6
-                    # fb.decideBehavior(self.behavior)
-                    # cv2.imshow('Frame',frame_blue)
-                # elif blue_counter == 0 and frame_blue_last:
-                #     self.behaviour = 69
-                #     blue_frame_last = False
-                #     fb.decideBehaviour(self.behaviour)
+                    fb.decideBehavior(self.behavior)
+                    cv2.imshow('Frame',frame_blue)
+                elif blue_counter == 0 and frame_blue_last:
+                    self.behaviour = 69
+                    blue_frame_last = False
+                    fb.decideBehaviour(self.behaviour)
 
                 if frame_green is None:
-                    print('HEEERE')
-                    print(type(frame))
-                    print(frame)
-                    
-                    
-                    
                     # print('no green: turn')
-                    # self.behavior = 5
-                    # if corridor.other_in_corridor:
-                    #     fb.wait()
-                    # else:
-                    #     fb.decideBehavior(self.behavior)
-                    
+                    self.behavior = 5
+                    if corridor.other_in_corridor:
+                        fb.wait()
+                    else:
+                        fb.decideBehavior(self.behavior)
                     continue
 
 
 
                 else:
                     cv2.imshow('Frame',frame_green)
-                
-                
 
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -161,9 +152,9 @@ class Camera:
                 # print('right')
                 self.behavior = 4
 
-            # if corridor.other_in_corridor:
-            #     fb.wait()
-            # else:
-            #     fb.decideBehavior(self.behavior)
+            if corridor.other_in_corridor:
+                fb.wait()
+            else:
+                fb.decideBehavior(self.behavior)
 
         self.video.release()

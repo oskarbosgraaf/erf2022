@@ -1,5 +1,5 @@
 import camera
-# from camera_corridor import Corridor
+from camera_corridor import Corridor
 
 if __name__ == '__main__':
     print( " === Starting Program === " )
