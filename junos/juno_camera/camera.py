@@ -106,12 +106,8 @@ class Camera:
                 #     fb.decideBehaviour(self.behaviour)
 
                 if frame_green is None:
-                    print('HEEERE')
-                    print(type(frame))
-                    print(frame)
-                    
-                    
-                    
+                    cv2.imshow('Frame', frame)
+                    cv2.waitKey(20)
                     # print('no green: turn')
                     # self.behavior = 5
                     # if corridor.other_in_corridor:
@@ -125,12 +121,16 @@ class Camera:
 
                 else:
                     cv2.imshow('Frame',frame_green)
+                    # cv2.imshow('Frame', frame)
+                
+                    
+                    cv2.waitKey(20)
                 
                 
 
 
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    break
+                # if cv2.waitKey(25) & 0xFF == ord('q'):
+                #     break
 
             else:
                 print('ret is false')

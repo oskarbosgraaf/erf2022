@@ -34,10 +34,13 @@ class FollowBlob():
 
     def wait(self):
         self.move(0, 0, 0.2)
+<<<<<<< HEAD
     
     def stop(self):
         self.move(0, 0, 3)
         # time.sleep(5)
+=======
+>>>>>>> parent of a1c39a0 (aan)
 
     def lights(self):
         shelly.switchPlug("on")
@@ -69,6 +72,7 @@ class FollowBlob():
 
         elif behavior == 6:
             self.lights()
+<<<<<<< HEAD
 
         elif behavior == 7:
             self.stop()
@@ -76,6 +80,8 @@ class FollowBlob():
         elif behavior == 69:
             self.lights_off()
 
+=======
+>>>>>>> parent of a1c39a0 (aan)
         else:
             print(' no action')
             return None
