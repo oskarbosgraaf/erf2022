@@ -128,22 +128,6 @@ class WallFollower:
 
 
     def LaserCb(self, scan_data):
-        # print('in laser')
-        # This function is called every time we get a laser scan.
-
-        # This is the plan:
-        # * Get scan data.
-        # * Convert it to x,y coordinates in the local frame of the robot.
-        # * Find a least squares - best fit line through those points with numpy.
-        #   Consider using data from multiple scans in one least-squares fit cycle.
-
-        #   This is a line equation, with respect to the car at (0,0), with the x axis being the heading.
-        #   Get vector theta for the line, and theta_0 as the y intersection.
-        # * Find the distance from the line to the origin with ( theta_T dot [[0],[0]] + theta_0 ) / (norm theta)
-        # TLDR, We have a vector theta for the line we have found, and a distance to that wall.
-
-        # TODO(yorai): Handle erroneous scan values. If one is too big, or too small, use past value. 
-        # Do not do this for too many in a row, maybe just throw scan away if too many corrections.
 
         angle_step = scan_data.angle_increment
         angle_min = scan_data.angle_min
@@ -219,20 +203,8 @@ class WallFollower:
                         drive_msg.angular.z == 0.1
             if drive_msg.angular.z > 1.8:
                 drive_msg.angular.z = drive_msg.angular.z * 0.8
-            #print(drive_msg.angular.z)
 
-
-
-
-            # drive_msg.drive.steering_angle = steer
-            # drive_msg.drive.steering_angle_velocity = 0.1
-            # drive_msg.drive.speed = self.VELOCITY
-            # drive_msg.drive.acceleration = 1
-            # drive_msg.drive.acceleration = 0.5
             # if not self.o_in_cor and self.o_passed_cor:
-
-
-            print(drive_msg)
             self.drive_pub.publish(drive_msg)
     
 
