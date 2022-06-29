@@ -29,6 +29,10 @@ class FollowBlob():
     
     def turn(self):
         self.move(0, 0.2, 0.1)
+
+
+    # def lights(self):
+    #     self.move(0,0,0)
     
     def decideBehavior(self, behavior):
         
@@ -50,6 +54,8 @@ class FollowBlob():
         elif behavior == 5:
             self.turn()
 
+        elif behavior == 6:
+            self.lights()
         else:
             print(' no action')
             return None

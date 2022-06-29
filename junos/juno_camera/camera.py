@@ -19,20 +19,19 @@ class Camera:
         plt.imshow(img_HSV)
         plt.show()
 
-    def one_big_rect(self, image):
+    def one_big_rect(self, color_string, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         result = image.copy()
 
-        # green
-        sensitivity_g = 30
-        green = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255)) 
+        if color_string == 'green':
+            sensitivity_g = 30
+            color = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255)) 
 
-        # blue
-        # sensitivity_b = 30
-        # b_h = 198
-        # blue = cv2.inRange(hsv,(b_h - sensitivity_b, 64, 80),(b_h + sensitivity_b, 104, 120)) 
+        if color_string == 'blue':
+            color = cv2.inRange(hsv,(99, 115, 150),(120, 255, 255)) 
 
-        contours = cv2.findContours(green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        contours = cv2.findContours(color, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if len(contours) == 2 else contours[1]
 
         boxes = []
@@ -69,6 +68,43 @@ class Camera:
         cv2.destroyAllWindows()
 
     # Onderstaande is de functie is voor blob detection en welke kant hij opgestuurd moet worden
+    def juno_detection(self):
+        self.video = cv2.VideoCapture(0)
+
+        self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+        
+        counter = 0
+
+        while(self.video.isOpened()):
+            ret, frame = self.video.read()
+            if ret == True:
+                frame, self.centerX = self.one_big_rect('blue', frame)
+                if frame is None:
+                    print('no blue: no lights')
+                    counter = 0
+                    # self.behavior = 5
+                    # fb.decideBehavior(self.behavior)
+                    continue
+
+                else:
+                    cv2.imshow('Frame',frame)
+                
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
+
+            else:
+                print('ret is false')
+                return None
+
+            counter += 1 
+            print('blue')
+            
+            if counter == 30:
+                self.behavior = 6
+                fb.decideBehavior(self.behavior)
+
+
+        
 
     def video_blob_direction(self):
         # 0 voor ubuntu logitech camera (Sien)
@@ -86,7 +122,7 @@ class Camera:
         while(self.video.isOpened()):
             ret, frame = self.video.read()
             if ret == True:
-                frame, self.centerX = self.one_big_rect(frame)
+                frame, self.centerX = self.one_big_rect('green', frame)
                 if frame is None:
                     print('no green: turn')
                     self.behavior = 5
