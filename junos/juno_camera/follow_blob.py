@@ -1,6 +1,8 @@
 import rospy
 from geometry_msgs.msg import Twist
 import cv2
+import shelly
+import time
 
 
 class FollowBlob():
@@ -34,7 +36,10 @@ class FollowBlob():
         self.move(0, 0, 0.2)
 
     def lights(self):
-        pass
+        shelly.switchPlug("on")
+        time.sleep(5)
+        shelly.switchPlug("off")
+
     
     def decideBehavior(self, behavior):
         
