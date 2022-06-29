@@ -4,7 +4,7 @@ import numpy as np
 import time
 # import follow_blob
 
-fb = follow_blob.FollowBlob()
+# fb = follow_blob.FollowBlob()
 
 
 class Camera:
@@ -22,7 +22,7 @@ class Camera:
     def one_big_rect(self, color_string, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         result = image.copy()
-
+        
         if color_string == 'green':
             sensitivity_g = 30
             color = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255)) 
@@ -47,64 +47,17 @@ class Camera:
         left, top = np.min(boxes, axis=0)[:2]
         right, bottom = np.max(boxes, axis=0)[2:]
         cv2.rectangle(result, (left,top), (right,bottom), (255, 0, 0), 2)
+        size_blob = (right - left) * (bottom - top)
+        if color_string == 'green' and size_blob > 1382000:
+            # stop
+            self.behavior = 8
+            # fb.decideBehavior(self.behavior)
+            # print("JUNO CLOSE")
+            print(size_blob)
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
         return RGB_result, self.centerX
-
-    def show_video_blob(self):
-        self.video = cv2.VideoCapture(0)
-
-        while(self.video.isOpened()):
-            ret, frame = self.video.read()
-            if ret == True:
-                frame, _ = self.one_big_rect(frame)
-                cv2.imshow('Frame',frame)
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    break
-            else:
-                break
-        self.video.release()
-        cv2.destroyAllWindows()
-
-    # Onderstaande is de functie is voor blob detection en welke kant hij opgestuurd moet worden
-    def juno_detection(self):
-        self.video = cv2.VideoCapture(0)
-
-        self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
-        
-        counter = 0
-
-        while(self.video.isOpened()):
-            ret, frame = self.video.read()
-            if ret == True:
-                frame, self.centerX = self.one_big_rect('blue', frame)
-                if frame is None:
-                    print('no blue: no lights')
-                    counter = 0
-                    self.behavior = 6
-                    fb.decideBehavior(self.behavior)
-                    continue
-
-                else:
-                    cv2.imshow('Frame',frame)
-                
-                if cv2.waitKey(25) & 0xFF == ord('q'):
-                    break
-
-            else:
-                print('ret is false')
-                return None
-
-            counter += 1 
-            print('blue')
-
-            if counter == 30:
-                self.behavior = 6
-                fb.decideBehavior(self.behavior)
-
-
-        
 
     def video_blob_direction(self):
         # 0 voor ubuntu logitech camera (Sien)
@@ -113,27 +66,49 @@ class Camera:
         # -1 webcam lap
         # 4 op laptop jurgens
         # self.video = cv2.VideoCapture(-1,cv2.CAP_V4L2)
-
+        
         # voor thijmens laptop
         self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
+        blue_counter = 0
+
         while(self.video.isOpened()):
             ret, frame = self.video.read()
             if ret == True:
-                frame, self.centerX = self.one_big_rect('green', frame)
-                if frame is None:
+                frame_green, self.centerX = self.one_big_rect('green', frame)
+                frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
+
+                if frame_blue is None:
+                    # reset blue counter
+                    # print('no blue')
+                    blue_counter = 0 
+               
+                else: 
+                    blue_counter += 1
+                    # print('blue')
+                    
+                if blue_counter == 30:
+                    blue_counter = 0
+                    # print("RESET")
+                    self.behavior = 6
+                    # fb.decideBehavior(self.behavior)
+
+                if frame_green is None:
                     print('no green: turn')
                     self.behavior = 5
-                    if corridor.other_in_corridor:
-                        fb.wait()
-                    else:
-                        fb.decideBehavior(self.behavior)
+                    # if corridor.other_in_corridor:
+                    #     fb.wait()
+                    # else:
+                    #     fb.decideBehavior(self.behavior)
                     continue
+                    
+                
 
                 else:
-                    cv2.imshow('Frame',frame)
+                    cv2.imshow('Frame',frame_green)
+    
                 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
@@ -143,33 +118,33 @@ class Camera:
                 return None
 
             if self.centerX < ((1/5)*self.width):
-                # print('left')
+                print('left')
                 self.behavior = 0
     
             
             if (self.centerX > (1/5)*self.width) and (self.centerX < (2/5)*self.width):
-                # print('adjust left')
+                print('adjust left')
                 self.behavior = 1
         
 
             if (self.centerX > (2/5)*self.width) and (self.centerX < (3/5)*self.width):
-                # print('forward')
+                print('forward')
                 self.behavior = 2
 
      
 
             if (self.centerX > (3/5)*self.width) and (self.centerX < (4/5)*self.width):
-                # print('adjust right')
+                print('adjust right')
                 self.behavior = 3
 
 
             if (self.centerX > ((4/5)*self.width)):
-                # print('right')
+                print('right')
                 self.behavior = 4
 
-            if corridor.other_in_corridor:
-                fb.wait()
-            else:
-                fb.decideBehavior(self.behavior)
+            # if corridor.other_in_corridor:
+            #     fb.wait()
+            # else:
+            #     fb.decideBehavior(self.behavior)
 
         self.video.release()
