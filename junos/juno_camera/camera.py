@@ -76,6 +76,8 @@ class Camera:
 
         # frame_blue_last = False
         blue_counter = 0
+        no_blue_counter = 0
+        last_blue = False
 
         while(self.video.isOpened()):
             ret, frame = self.video.read()
@@ -86,26 +88,48 @@ class Camera:
 
                 if frame_blue is None:
                     # reset blue counter
-                    # print('no blue')
-                    blue_counter = 0 
-               
+                    print('no blue')
+                    no_blue_counter += 1
+                
+
+                    if no_blue_counter > 5 and last_blue:
+                        no_blue_counter = 0
+                        blue_counter = 0 
+                        last_blue = False
+                        print("LIGHTS OFF")
+                        self.behavior = 11
                 else: 
                     blue_counter += 1
+                    no_blue_counter = 0
                     # frame_blue_last = True
-                    # print('blue')
+                    print('blue')
 
-                if blue_counter == 8:
-                    blue_counter = 0
-                    # print("RESET")
-                    self.behavior = 6
-                    # fb.decideBehavior(self.behavior)
-                    # cv2.imshow('Frame',frame_blue)
-                # elif blue_counter == 0 and frame_blue_last:
-                #     self.behaviour = 69
-                #     blue_frame_last = False
-                #     fb.decideBehaviour(self.behaviour)
+                    if blue_counter > 5 and not last_blue:
+                        blue_counter = 0
+                        no_blue_counter = 0
+                        last_blue = True
+                        print("LIGHTS ON")
+                        self.behavior = 10
+                        # fb.decideBehavior(self.behavior)
 
-                if frame_green is None:
+
+
+
+                if frame_green is not None:
+                    cv2.imshow('Frame',frame_green)
+                    # cv2.imshow('Frame', frame)
+            
+                    cv2.waitKey(20)
+
+                elif frame_blue is not None:
+                    cv2.imshow('Frame',frame_blue)
+                    # cv2.imshow('Frame', frame)
+            
+                    cv2.waitKey(20)
+                    continue
+
+                else:
+                    
                     cv2.imshow('Frame', frame)
                     cv2.waitKey(20)
                     # print('no green: turn')
@@ -117,20 +141,6 @@ class Camera:
                     
                     continue
 
-
-
-                else:
-                    cv2.imshow('Frame',frame_green)
-                    # cv2.imshow('Frame', frame)
-                
-                    
-                    cv2.waitKey(20)
-                
-                
-
-
-                # if cv2.waitKey(25) & 0xFF == ord('q'):
-                #     break
 
             else:
                 print('ret is false')
