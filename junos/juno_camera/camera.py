@@ -2,10 +2,9 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-import follow_blob
+# import follow_blob
 
-
-fb = follow_blob.FollowBlob()
+# fb = follow_blob.FollowBlob()
 
 
 class Camera:
@@ -45,11 +44,11 @@ class Camera:
         cv2.rectangle(result, (left,top), (right,bottom), (255, 0, 0), 2)
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
-        RGB_result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+        RGB_result = result
         return RGB_result, self.centerX
 
     def show_video_blob(self):
-        self.video = cv2.VideoCapture(1)
+        self.video = cv2.VideoCapture(0)
 
         while(self.video.isOpened()):
             ret, frame = self.video.read()
@@ -70,27 +69,21 @@ class Camera:
         # 1, error vindt niet
         # 0 webcam lap
         # -1 webcam lap
-        self.video = cv2.VideoCapture(0,cv2.CAP_V4L2)
-        # print('thanks')
+        # 4 op laptop jurgens
+        # self.video = cv2.VideoCapture(-1,cv2.CAP_V4L2)
+
+        # voor thijmens laptop
+        self.video = cv2.VideoCapture(0)
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
-        # height = self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        # print('width and height')
-        # print(width, height)
 
         while(self.video.isOpened()):
-            print("2")
-            # print('in video direction while')
             ret, frame = self.video.read()
-            # print(f'frame shape = {frame.shape}')
-            # print(f'frame = {frame}')
             if ret == True:
                 frame, self.centerX = self.one_big_rect(frame)
-                # print(f'centerX = {centerX}')
-                # print(f'frame shape = {frame.shape}')
                 if frame is None:
                     print('no green: turn')
                     self.behavior = 5
-                    fb.decideBehavior(self.behavior)
+                    # fb.decideBehavior(self.behavior)
                     continue
 
                 else:
@@ -102,35 +95,32 @@ class Camera:
             else:
                 print('ret is false')
                 return None
-            # print(f'width = {self.width}')
-            print(f'centerx = {self.centerX}')
-            print(f'widt = {self.width}')
-            if self.centerX < ((1/5)*self.width):
-                print('cam left')
 
+            if self.centerX < ((1/5)*self.width):
+                print('left')
                 self.behavior = 0
-                # return 0
+    
             
             if (self.centerX > (1/5)*self.width) and (self.centerX < (2/5)*self.width):
-                print('cam adjust left')
+                print('adjust left')
                 self.behavior = 1
-                # return 1
+        
 
             if (self.centerX > (2/5)*self.width) and (self.centerX < (3/5)*self.width):
-                print('cam move forward')
+                print('forward')
                 self.behavior = 2
-                # return 2
+
+     
 
             if (self.centerX > (3/5)*self.width) and (self.centerX < (4/5)*self.width):
-                print('cam adjust right')
+                print('adjust right')
                 self.behavior = 3
-                # return 3
+
 
             if (self.centerX > ((4/5)*self.width)):
-                print('cam right')
+                print('right')
                 self.behavior = 4
-                # return 4
-            
-            fb.decideBehavior(self.behavior)
+
+            # fb.decideBehavior(self.behavior)
 
         self.video.release()
