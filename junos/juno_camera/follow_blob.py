@@ -40,7 +40,7 @@ class FollowBlob():
         print("lights turned on")
         
     def lights_off(self):
-        shelly.switchplug("off")
+        shelly.switchPlug("off")
         print("lights turned off")
     
     def decideBehavior(self, behavior):

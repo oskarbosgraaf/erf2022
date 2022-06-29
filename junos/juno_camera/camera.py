@@ -2,12 +2,12 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import time
-# import follow_blob
-# from camera_corridor import Corridor
+import follow_blob
+from camera_corridor import Corridor
 import sys
-# fb = follow_blob.FollowBlob()
+fb = follow_blob.FollowBlob()
 
-# corridor = Corridor()
+corridor = Corridor()
 
 class Camera:
     def __init__(self):
@@ -50,12 +50,18 @@ class Camera:
         right, bottom = np.max(boxes, axis=0)[2:]
         cv2.rectangle(result, (left,top), (right,bottom), (255, 0, 0), 2)
         size_blob = (right - left) * (bottom - top)
-        if color_string == 'green' and size_blob > 1382000:
-            # stop
-            self.behavior = 8
+
+        # UNCOMMENT IF TIME LEFT
+
+        # if color_string == 'green' and size_blob > 1382000:
+        #     # stop
+        #     self.behavior = 8
             # fb.decideBehavior(self.behavior)
             # print("JUNO CLOSE")
-            print(size_blob)
+            # print(size_blob)
+
+        #########
+
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
@@ -67,14 +73,13 @@ class Camera:
         # 0 webcam lap
         # -1 webcam lap
         # 4 op laptop jurgens
-        # self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
+        self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
 
         # voor thijmens laptop
-        self.video = cv2.VideoCapture(0)
+        # self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
-        # frame_blue_last = False
         blue_counter = 0
         no_blue_counter = 0
         last_blue = False
@@ -85,6 +90,7 @@ class Camera:
                 frame_green, self.centerX = self.one_big_rect('green', frame)
                 frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
 
+                ### UNCOMMENT IF TIME
 
                 if frame_blue is None:
                     # reset blue counter
@@ -98,6 +104,7 @@ class Camera:
                         last_blue = False
                         print("LIGHTS OFF")
                         self.behavior = 11
+                        fb.decideBehavior(11)
                 else: 
                     blue_counter += 1
                     no_blue_counter = 0
@@ -110,11 +117,10 @@ class Camera:
                         last_blue = True
                         print("LIGHTS ON")
                         self.behavior = 10
-                        # fb.decideBehavior(self.behavior)
+                        fb.decideBehavior(self.behavior)
 
-
-
-
+                ###### 
+                
                 if frame_green is not None:
                     cv2.imshow('Frame',frame_green)
                     # cv2.imshow('Frame', frame)
