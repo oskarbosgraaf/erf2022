@@ -15,7 +15,7 @@ def switchPlug(toggle: str = None) -> None:
         url2 += "on"
 
     r1 = requests.get(url1)
-    time.sleep(.5)
+    time.sleep(.3)
     r2 = requests.get(url2)
 
     print(f"request1 {r1.json()}")

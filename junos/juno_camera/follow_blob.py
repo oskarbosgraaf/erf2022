@@ -39,12 +39,13 @@ class FollowBlob():
         self.move(0, 0, 3)
         # time.sleep(5)
 
-
     def lights(self):
-        shelly.switchPlug('on')
-        time.sleep(5)
-        shelly.switchPlug("off")
-
+        shelly.switchPlug("on")
+        print("lights turned on")
+        
+    def lights_off(self):
+        shelly.switchplug("off")
+        print("lights turned off")
     
     def decideBehavior(self, behavior):
         
@@ -71,6 +72,10 @@ class FollowBlob():
 
         elif behavior == 7:
             self.stop()
+
+        elif behavior == 69:
+            self.lights_off()
+
         else:
             print(' no action')
             return None

@@ -24,13 +24,13 @@ class Camera:
     def one_big_rect(self, color_string, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         result = image.copy()
-        
+
         if color_string == 'green':
             sensitivity_g = 30
-            color = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255)) 
+            color = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255))
 
         if color_string == 'blue':
-            color = cv2.inRange(hsv,(99, 115, 150),(120, 255, 255)) 
+            color = cv2.inRange(hsv,(99, 115, 150),(120, 255, 255))
 
 
         contours = cv2.findContours(color, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -54,8 +54,8 @@ class Camera:
             time.sleep(5)
             # self.behavior = 7
             # fb.decideBehavior(self.behavior)
-            
-            
+
+
         distanceX = (960/(right-left)) * 60
         self.centerX = (x+(0.5*w))
         RGB_result = result
@@ -68,12 +68,13 @@ class Camera:
         # -1 webcam lap
         # 4 op laptop jurgens
         self.video = cv2.VideoCapture(4,cv2.CAP_V4L2)
-        
+
         # voor thijmens laptop
         # self.video = cv2.VideoCapture(0)
 
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
+        frame_blue_last = False
         blue_counter = 0
 
         while(self.video.isOpened()):
@@ -82,22 +83,27 @@ class Camera:
                 frame_green, self.centerX = self.one_big_rect('green', frame)
                 frame_blue, self.centerX_blue = self.one_big_rect('blue', frame)
 
-                
+
                 if frame_blue is None:
                     # reset blue counter
                     # print('no blue')
-                    blue_counter = 0 
+                    blue_counter = 0
 
-                else: 
+                else:
                     blue_counter += 1
+                    frame_blue_last = True
                     # print('blue')
-                    
-                if blue_counter == 5:
+
+                if blue_counter == 8:
                     blue_counter = 0
                     # print("RESET")
                     self.behavior = 6
                     fb.decideBehavior(self.behavior)
                     cv2.imshow('Frame',frame_blue)
+                elif blue_counter == 0 and frame_blue_last:
+                    self.behaviour = 69
+                    blue_frame_last = False
+                    fb.decideBehaviour(self.behaviour)
 
                 if frame_green is None:
                     # print('no green: turn')
@@ -107,13 +113,13 @@ class Camera:
                     else:
                         fb.decideBehavior(self.behavior)
                     continue
-                    
-                
+
+
 
                 else:
                     cv2.imshow('Frame',frame_green)
-    
-                
+
+
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
 
@@ -124,18 +130,18 @@ class Camera:
             if self.centerX < ((1/5)*self.width):
                 # print('left')
                 self.behavior = 0
-    
-            
+
+
             if (self.centerX > (1/5)*self.width) and (self.centerX < (2/5)*self.width):
                 # print('adjust left')
                 self.behavior = 1
-        
+
 
             if (self.centerX > (2/5)*self.width) and (self.centerX < (3/5)*self.width):
                 # print('forward')
                 self.behavior = 2
 
-     
+
 
             if (self.centerX > (3/5)*self.width) and (self.centerX < (4/5)*self.width):
                 # print('adjust right')
