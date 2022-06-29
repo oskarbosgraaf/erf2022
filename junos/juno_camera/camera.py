@@ -21,11 +21,17 @@ class Camera:
 
     def one_big_rect(self, image):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        # orange = cv2.inRange(hsv,(0, 100, 20), (25, 200, 255))
-        # orange = cv2.medianBlur(orange, 5)
         result = image.copy()
-        sensitivity = 30
-        green = cv2.inRange(hsv,(60 - sensitivity, 100, 100),(60 + sensitivity, 255, 255)) 
+
+        # green
+        sensitivity_g = 30
+        green = cv2.inRange(hsv,(60 - sensitivity_g, 100, 100),(60 + sensitivity_g, 255, 255)) 
+
+        # blue
+        # sensitivity_b = 30
+        # b_h = 198
+        # blue = cv2.inRange(hsv,(b_h - sensitivity_b, 64, 80),(b_h + sensitivity_b, 104, 120)) 
+
         contours = cv2.findContours(green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0] if len(contours) == 2 else contours[1]
 
@@ -74,6 +80,7 @@ class Camera:
 
         # voor thijmens laptop
         self.video = cv2.VideoCapture(0)
+
         self.width = self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
 
         while(self.video.isOpened()):
@@ -97,28 +104,28 @@ class Camera:
                 return None
 
             if self.centerX < ((1/5)*self.width):
-                print('left')
+                # print('left')
                 self.behavior = 0
     
             
             if (self.centerX > (1/5)*self.width) and (self.centerX < (2/5)*self.width):
-                print('adjust left')
+                # print('adjust left')
                 self.behavior = 1
         
 
             if (self.centerX > (2/5)*self.width) and (self.centerX < (3/5)*self.width):
-                print('forward')
+                # print('forward')
                 self.behavior = 2
 
      
 
             if (self.centerX > (3/5)*self.width) and (self.centerX < (4/5)*self.width):
-                print('adjust right')
+                # print('adjust right')
                 self.behavior = 3
 
 
             if (self.centerX > ((4/5)*self.width)):
-                print('right')
+                # print('right')
                 self.behavior = 4
 
             # fb.decideBehavior(self.behavior)
