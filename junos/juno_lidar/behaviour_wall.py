@@ -3,6 +3,8 @@
 import numpy as np
 import math
 
+from pyrsistent import s
+
 import rospy
 from rospy.numpy_msg import numpy_msg
 from sensor_msgs.msg import LaserScan
@@ -18,7 +20,7 @@ class WallFollower:
     SCAN_TOPIC = "/scan"
     DRIVE_TOPIC = "/cmd_vel"
     SIDE = -1 # -1 right is and +1 is left
-    VELOCITY = 0.08
+    VELOCITY = 0.09
     DESIRED_DISTANCE = 0.6
     COR_DIST = 1.5
 
@@ -99,9 +101,7 @@ class WallFollower:
 
 
     def LaserCb(self, scan_data):
-
-
-        # print('in laserCB')
+        print('in laserCB')
         angle_step = scan_data.angle_increment
         angle_min = scan_data.angle_min
         angle_max = scan_data.angle_max
@@ -138,7 +138,7 @@ class WallFollower:
             # Distance to wall is (th.T dot x_0 + th_0)/(norm(th))
             dist_to_wall = abs(c/np.linalg.norm(th))
 
-            # print(f'dist_to_wall: {dist_to_wall}')
+            print(f'dist_to_wall: {dist_to_wall}')
 
             # Angle between heading and wall.
             angle_to_wall = math.atan2(m, 1)
@@ -166,7 +166,7 @@ class WallFollower:
             drive_msg.linear.x = self.VELOCITY
             if scan_data.ranges[0] < 0.6:
                 drive_msg.linear.x = 0.1
-            drive_msg.angular.z = 0.3*steer
+            drive_msg.angular.z = 0.1*steer
             if scan_data.ranges[0] < 0.6:
                 if drive_msg.angular.z < 0:
                     if drive_msg.angular.z > -0.1:
@@ -175,11 +175,13 @@ class WallFollower:
                     if drive_msg.angular.z < 0.1:
                         drive_msg.angular.z == 0.1
             if drive_msg.angular.z > 1.8:
-                drive_msg.angular.z = drive_msg.angular.z * 0.8
+                drive_msg.angular.z = drive_msg.angular.z * 0.5
 
             # print(drive_msg)
             # if not self.stop_done:
+
             self.drive_pub.publish(drive_msg)
+    
 
 
             if corridor.in_corridor and not self.once_corridor:
@@ -204,6 +206,7 @@ class WallFollower:
                 #     msg.angular.z = 2.0
                 #     self.turn_done = True
                 #     self.count_follow = 0
+                #     self.side = 1
                     # follow wall again
 
             if (self.twice_corridor and not corridor.in_corridor) and not self.stop_done:
