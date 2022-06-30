@@ -34,12 +34,18 @@ class FollowBlob():
 
     def wait(self):
         self.move(0, 0, 0.2)
+    
+    def stop(self):
+        self.move(0, 0, 3)
+        # time.sleep(5)
 
-    def lights_on(self):
+    def lights(self):
         shelly.switchPlug("on")
+        print("lights turned on")
         
     def lights_off(self):
-        shelly.switchPlug("off")
+        shelly.switchplug("off")
+        print("lights turned off")
     
     def decideBehavior(self, behavior):
         
@@ -61,10 +67,13 @@ class FollowBlob():
         elif behavior == 5:
             self.turn()
 
-        elif behavior == 10:
-            self.lights_on()
+        elif behavior == 6:
+            self.lights()
 
-        elif behavior == 11:
+        elif behavior == 7:
+            self.stop()
+
+        elif behavior == 69:
             self.lights_off()
 
         else:
