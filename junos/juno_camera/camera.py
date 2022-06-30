@@ -4,15 +4,17 @@ import numpy as np
 import follow_blob
 from camera_corridor import Corridor
 fb = follow_blob.FollowBlob()
+from std.msgs.msg import Bool # jurgen
 
-corridor = Corridor()
-
+# corridor = Corridor()
+ 
 class Camera:
     def __init__(self):
         self.video = 0
         self.width = 0
         self.behavior = 2
         self.centerX = 320
+        self.pub_j = rospy.Publisher('other_detected', Bool, queue_size=10) #jurgen
 
     def show_RGB_to_HSV(self, image):
         img_HSV = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
@@ -87,46 +89,50 @@ class Camera:
 
                 ###### UNCOMMENT IF TIME
 
-                # # blue is not detected
-                # if frame_blue is None:
-                #     # reset blue counter
-                #     print('no blue')
-                #     no_blue_counter += 1
+                # blue is not detected
+                if frame_blue is None:
+                    # reset blue counter
+                    # print('no blue')
+                    no_blue_counter += 1
                 
 
-                #     if no_blue_counter > 5 and last_blue:
-                #         # reset counters
-                #         no_blue_counter = 0
-                #         blue_counter = 0 
+                    if no_blue_counter > 5 and last_blue:
+                        # reset counters
+                        no_blue_counter = 0
+                        blue_counter = 0 
 
-                #         # now we have not seen blue
-                #         last_blue = False
+                        # now we have not seen blue
+                        last_blue = False
 
-                #         print("LIGHTS OFF")
+                        # print("LIGHTS OFF")
 
-                #         # activate behavior
-                #         self.behavior = 11
-                #         fb.decideBehavior(11)
+                        # activate behavior
+                        self.behavior = 11
+                        fb.decideBehavior(11)
+                          self.pub_j.publish(False)                             jurgen
 
-                # # blue is detected
-                # else: 
-                #     blue_counter += 1
-                #     no_blue_counter = 0
-                #     print('blue')
 
-                #     if blue_counter > 5 and not last_blue:
-                #         # reset counters
-                #         blue_counter = 0
-                #         no_blue_counter = 0
+                # blue is detected
+                else: 
+                    blue_counter += 1
+                    no_blue_counter = 0
+                    # print('blue')
 
-                #         # now we have seen blue
-                #         last_blue = True
+                    if blue_counter > 5 and not last_blue:
+                        # reset counters
+                        blue_counter = 0
+                        no_blue_counter = 0
 
-                #         print("LIGHTS ON")
+                        # now we have seen blue
+                        last_blue = True
 
-                #         # activate behavior
-                #         self.behavior = 10
-                #         fb.decideBehavior(self.behavior)
+                        # print("LIGHTS ON")
+
+                        # activate behavior
+                        self.behavior = 10
+                        # fb.decideBehavior(self.behavior)
+                          self.pub_j.publish(True)                             jurgen
+
 
                 #############
                 
@@ -148,11 +154,9 @@ class Camera:
                     cv2.imshow('Frame', frame)
                     cv2.waitKey(20)
                     # print('no green: turn')
-                    # self.behavior = 5
-                    # if corridor.other_in_corridor:
-                    #     fb.wait()
-                    # else:
-                    #     fb.decideBehavior(self.behavior)
+                    self.behavior = 5
+
+                    fb.decideBehavior(self.behavior)
                     
                     continue
 
@@ -160,7 +164,7 @@ class Camera:
             else:
                 print('ret is false')
                 return None
-
+            print(self.centerX)
             if self.centerX < ((1/5)*self.width):
                 # print('left')
                 self.behavior = 0
@@ -186,10 +190,7 @@ class Camera:
                 # print('right')
                 self.behavior = 4
 
-            
-            # if corridor.other_in_corridor:
-            #     fb.wait()
-            # else:
-            #     fb.decideBehavior(self.behavior)
+
+            fb.decideBehavior(self.behavior)
 
         self.video.release()
