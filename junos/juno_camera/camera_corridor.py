@@ -1,3 +1,24 @@
+
+"""
+Code for corridor information for the autonomous navigational robotics hackathon
+from European Robotics Forum (ERF) 2022, implemented specifically for the Lely
+Juno robot.
+Team Unuversity of Amsterdam
+Github: https://github.com/oskarbosgraaf/erf2022
+
+Written and implemented by:
+    Sjoerd Gunneweg
+    Thijmen Nijdam
+    Jurgen de Heus
+    Francien Barkhof
+    Oskar Bosgraaf
+    Juell Sprott
+    Sander van den Bent
+    Derck Prinzhoorn
+
+last updated: 1st of July, 2022
+"""
+
 import rospy
 from std_msgs.msg import Bool
 from std_msgs.msg import Int32
@@ -5,22 +26,17 @@ from sensor_msgs.msg import LaserScan
 
 
 class Corridor:
+    """Information class for keeping track of the other Juno's corridor state."""
+
     def __init__(self):
-        # self.in_corridor = False
         self.other_in_corridor = False
-        # self.corr_dist = 1.5
-        # self.count = 0
         self.count_other = 0
         self.act = False
-
-
         rospy.Subscriber('in_corridor_MC', Bool, self.corridorCB)
-        # rospy.Subscriber('/client_scan/scan', LaserScan, self.laserCB)
-
-        # self.pub = rospy.Publisher('test_corridor', Bool, queue_size=10)
 
 
     def corridorCB(self, msg):
+        """Keep track of the other Juno's corridor state."""
         if msg.data:
             self.other_in_corridor = True
         elif msg.data == False:
@@ -29,29 +45,4 @@ class Corridor:
         if self.count_other > 10:
             self.other_in_corridor = False
             self.count_other = 0
-
-    # def laserCB(self, data):
-    #     if data.ranges[270] + data.ranges[90] < self.corr_dist and self.count <= 10:
-    #         self.count += 1
-    #     elif data.ranges[270] + data.ranges[90] >= self.corr_dist and self.count >= 0:
-    #         self.count -= 1
-
-    #     print(self.count)
-    #     if self.count > 10:
-    #         self.in_corridor = True
-    #     if self.count < 0:
-    #         self.in_corridor = False
-
-    #     if self.in_corridor and self.other_in_corridor:
-    #         self.act = True
-
-    #     if self.act and self.other_in_corridor == False:
-    #         self.act = False 
-
-    #     self.pub.publish(self.in_corridor)
-
-        
-
-    
-
 
