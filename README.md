@@ -5,11 +5,10 @@
 Unofficial repository for the European Robotics Forum challenge for the second year project of BSc AI at UvA.
 
 This repository contains the documentation website code and Markdown source files for [UvA robolab](https://robolab.science.uva.nl/)
-## IN DEVELOPMENT 
 
 ## Project Description
 ### Project Goal
-The goal of this project is to develop software for the ERF challenge. The challenge was to implement code on two Lely Juno robots.
+The goal of this project is to develop software for the ERF challenge. The challenge was to implement code on two Lely Juno robots. In the Github repo you can find code for development and code for deployment.
 
 <!---[Specific link to another markdown file](docs/CONTRIBUTING.md)-->
 
@@ -19,32 +18,7 @@ The goal of this project is to develop software for the ERF challenge. The chall
 - Communication between the Junos and the wifi implementation for this to happen.
 
 ## What it does
-The UvA ERF software has the following functionalities:
-
-## Functionality To Do
-1. 
-2. 
-## Code To Do
-1.
-2.
-
-## Installation
-
-## Usage instructions
-```
-```
-## Usage Examples
-
-
-
-## file structure
-check catkin_ws ROS(1) packages and launch files
-
-
-## Default Configs
-
-```
-```
+The UvA ERF software provides the functionality to move a robot based on sensor input. The sensor input used to develop are LiDAR, ultrasonic sensors and video camera. We implemented a behavior based approach, a model based approach and a color based blob detection approach.
 
 ## Credits
 <p align="left">
