@@ -49,18 +49,25 @@ check catkin_ws ROS(1) packages and launch files
 ## Credits
 ### Derck Prinzhorn
 <p align="left">
-<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://www.linkedin.com/in/derckprinzhorn/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
 </p>
+
+### Jurgen
+<p align="left">
+<a href="https://www.linkedin.com/in/jurgen-de-heus/"><img src="https://www.linkedin.com/in/jurgen-de-heus/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
+</p>
+
+### Thijmen
 
 <p align="left">
-<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/thijmen-nijdam/"><img src="https://www.linkedin.com/in/thijmen-nijdam/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
 </p>
 
+### Juell
 
 <p align="left">
-<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/juellsprott/"><img src="https://www.linkedin.com/in/juellsprott/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
 </p>
-
 
 </br>
 
