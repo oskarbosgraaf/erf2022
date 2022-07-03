@@ -69,6 +69,30 @@ check catkin_ws ROS(1) packages and launch files
 <a href="https://www.linkedin.com/in/juellsprott/"><img src="https://media-exp2.licdn.com/dms/image/C4E03AQFFpTqweCzzxQ/profile-displayphoto-shrink_800_800/0/1656682448242?e=1662595200&v=beta&t=mQIo-O-t8t-HODBEa7HuK-zqs3IRDQ3cHU9lgYPT1gc" alt="Juell" width="100px"/></a>
 </p>
 
+### Francien
+
+<p align="left">
+<a href="https://www.linkedin.com/in/francien-barkhof-512393227/"><img src="https://media-exp2.licdn.com/dms/image/C5603AQFnMFquh7SgyA/profile-displayphoto-shrink_800_800/0/1638109294288?e=1662595200&v=beta&t=27TCzS7bWYYRuWRq7Xod5Xs6uyoY1bTvJN3k5FJpFss" alt="Juell" width="100px"/></a>
+</p>
+
+### Oskar Bosgraaf
+
+<p align="left">
+<a href="https://www.linkedin.com/in/oskar-bosgraaf/"><img src="https://media-exp2.licdn.com/dms/image/D4E35AQHWx4fHFIxVMg/profile-framedphoto-shrink_800_800/0/1647945777754?e=1657465200&v=beta&t=mEVkeGFAl4w-dYQziIJze6wPlOCf-EEBC6Am5m6V8Xk" alt="Oskar" width="100px"/></a>
+</p>
+
+### Sander
+
+<p align="left">
+<a href="https://www.linkedin.com/in/sander-van-den-bent/"><img src="https://media-exp2.licdn.com/dms/image/C4E03AQFzFfh5_LK16w/profile-displayphoto-shrink_800_800/0/1624638701589?e=1662595200&v=beta&t=XyH_ME1puphpH6SQKx5VPprgAaTmJXCwUcPSnYMiMTc" alt="Sander" width="100px"/></a>
+</p>
+
+### Sjoerd
+
+<p align="left">
+<a href="https://www.linkedin.com/in/sjoerdgunneweg/"><img src="https://media-exp2.licdn.com/dms/image/C4D03AQFR8r_dr0u2cg/profile-displayphoto-shrink_800_800/0/1648541386572?e=1662595200&v=beta&t=JxHFWqjBA2MyiUmrTgeSDYv0MYIph0LmbnQrdsSmHC4" alt="Sjoerd" width="100px"/></a>
+</p>
+
 </br>
 
 </br>
