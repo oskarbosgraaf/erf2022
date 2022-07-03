@@ -47,13 +47,17 @@ check catkin_ws ROS(1) packages and launch files
 ```
 
 ## Credits
+### Derck Prinzhorn
+<p align="left">
+<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
+</p>
 
 <p align="left">
-
 <a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
-  
-<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
+</p>
 
+
+<p align="left">
 <a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://avatars.githubusercontent.com/u/73822624?v=4" alt="Derck Prinzhorn" width="100px"/></a>
 </p>
 
