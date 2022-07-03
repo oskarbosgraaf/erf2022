@@ -47,7 +47,6 @@ check catkin_ws ROS(1) packages and launch files
 ```
 
 ## Credits
-### Derck Prinzhorn
 <p align="left">
 <a href="https://www.linkedin.com/in/derckprinzhorn/">Derck Prinzhorn</a>
 </p>
