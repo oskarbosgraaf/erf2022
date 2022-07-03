@@ -1,10 +1,29 @@
-#!/usr/bin/env python
+"""
+This code is mainly based on the wall_follower_sim code from Yoraish.
+Github: https://github.com/yoraish/lidar_bot/tree/wall-follow-example/src/ros/wall_follower_sim
+
+Code for behaviour based wall following for the autonomous navigational robotics hackathon
+from European Robotics Forum (ERF) 2022, implemented specifically for the Lely
+Juno robot.
+Team Unuversity of Amsterdam
+Github: https://github.com/oskarbosgraaf/erf2022
+
+Written and implemented by:
+    Sjoerd Gunneweg
+    Thijmen Nijdam
+    Jurgen de Heus
+    Francien Barkhof
+    Oskar Bosgraaf
+    Juell Sprott
+    Sander van den Bent
+    Derck Prinzhoorn
+
+last updated: 3st of July, 2022
+"""
 
 import numpy as np
 import math
-
 from pyrsistent import s
-
 import rospy
 from rospy.numpy_msg import numpy_msg
 from sensor_msgs.msg import LaserScan
@@ -12,31 +31,25 @@ from geometry_msgs.msg import Twist
 from controller import PID
 from std_msgs.msg import Bool
 from lidar_corridor import Corridor    
-import time
+
 
 class WallFollower:
-    COM_TOPIC_CM = "client_master"
-    COM_TOPIC_MC = "master_client"
-    SCAN_TOPIC = "/scan"
-    DRIVE_TOPIC = "/cmd_vel"
+    """
+    Class for a behaviour based approach to wall following. 
+    """
+
+    DRIVE_TOPIC = "/cmd_vel" # Twist messages to Juno
     SIDE = -1 # -1 right is and +1 is left
     VELOCITY = 0.09
-    DESIRED_DISTANCE = 0.6
-    COR_DIST = 1.5
+    DESIRED_DISTANCE = 0.6 # desired distance to the wall
 
     def __init__(self):
-        print('in init')
-
+        # retreiving data from lidar scanner
         rospy.Subscriber('/scan', LaserScan, self.LaserCb)
-
+        # publisher to send the drive messages to the Juno
         self.drive_pub = rospy.Publisher(self.DRIVE_TOPIC, Twist, queue_size = 10)
 
-        # Variables to keep track of drive commands being sent to robot.
-        self.seq_id = 0
-
-        self.backward = False
-
-        # Class variables for following.
+        # class variables for following.
         self.side_angle_window_fwd_ = math.pi*0.1
         self.side_angle_window_bwd_ = math.pi - math.pi*0.3
 
@@ -51,22 +64,10 @@ class WallFollower:
 
         self.pid = PID()
 
-        # self.in_cor = False
-        # self.o_in_cor = False
-        # self.o_passed_cor = False
-
-        self.checkin_corridor = False
-        self.checkout_corridor = True
-
-        self.never_corridor = True
-        self.once_corridor = False
-        self.twice_corridor = False
-
-        self.turn_done = False
-        self.stop_done = False
-        self.count_follow = 0
-
     def GetLocalSideWallCoords(self, ranges, angle_min, angle_max, angle_step):
+        """
+        Function for obtaining the location of the wall(s).
+        """
         # Slice out the interesting samples from our scan. pi/2 radians from pi/4 to (pi - pi/4) radians for the right side.
         positive_start_angle = self.side_angle_window_fwd_
         positive_end_angle   = self.side_angle_window_bwd_
@@ -86,7 +87,6 @@ class WallFollower:
         y_values = np.array([ranges[i]*math.sin(angle_min+i*angle_step) if i < len(ranges) else ranges[i - len(ranges)]*math.sin(angle_min+(i - len(ranges))*angle_step) for i in range(start_ix, end_ix)])
 
         # Check that the values for the points are within 1 meter from each other. Discard any point that is not within one meter form the one before it.
-
         out_x = []
         out_y = []
         for ix in range(0, len(x_values)):
@@ -96,12 +96,14 @@ class WallFollower:
                 out_x.append(new_point[0])
                 out_y.append(new_point[1])
 
-
         return np.array(out_x), np.array(out_y)
 
 
     def LaserCb(self, scan_data):
-        print('in laserCB')
+        """
+        Callback function to determine the movements using the laser data.
+        """
+
         angle_step = scan_data.angle_increment
         angle_min = scan_data.angle_min
         angle_max = scan_data.angle_max
@@ -111,7 +113,7 @@ class WallFollower:
         # Get data for side ranges. Add to buffer.
         wall_coords_local = self.GetLocalSideWallCoords(ranges, angle_min, angle_max, angle_step)
         #######
-        #Find mean and throw out everything that is 1 meter away from mean distance, no outliers.
+        # Find mean and throw out everything that is 1 meter away from mean distance, no outliers.
         # If one differs by more than a meter from the previous one, gets thrown out from both x and y. Distnaces as we go along vector of points.
         # but print the things first.
         #######
@@ -137,13 +139,11 @@ class WallFollower:
 
             # Distance to wall is (th.T dot x_0 + th_0)/(norm(th))
             dist_to_wall = abs(c/np.linalg.norm(th))
-
             print(f'dist_to_wall: {dist_to_wall}')
 
             # Angle between heading and wall.
             angle_to_wall = math.atan2(m, 1)
-
-            # print(f'angle to wall {angle_to_wall}')
+            print(f'angle to wall {angle_to_wall}')
 
             # Clear scan buffers.
             self.point_buffer_x_=np.array([])
@@ -152,17 +152,12 @@ class WallFollower:
 
             # Simple Proportional controller.
             # Feeding the current angle ERROR(with target 0), and the distance ERROR to wall. Desired error to be 0.
-            #print("ANGLE", angle_to_wall, "DIST", dist_to_wall)
             steer = self.pid.GetControl(0.0 - angle_to_wall, self.DESIRED_DISTANCE - dist_to_wall, self.SIDE)
 
             # Publish control to /drive topic.
             drive_msg = Twist()
 
-            # drive_msg.header.seq = self.seq_id
-            # self.seq_id += 1
-
             # Populate the command itself
-
             drive_msg.linear.x = self.VELOCITY
             if scan_data.ranges[0] < 0.6:
                 drive_msg.linear.x = 0.1
@@ -177,58 +172,15 @@ class WallFollower:
             if drive_msg.angular.z > 1.8:
                 drive_msg.angular.z = drive_msg.angular.z * 0.5
 
-            # print(drive_msg)
-            # if not self.stop_done:
-
             self.drive_pub.publish(drive_msg)
     
 
-
-            if corridor.in_corridor and not self.once_corridor:
-                print('passed first corridor')
-                self.once_corridor = True
-
-            if (corridor.in_corridor and self.once_corridor) and not self.twice_corridor:
-                print('passed second corridor')
-                self.twice_corridor = True
-            
-            if (self.once_corridor and not corridor.in_corridor) and not self.turn_done:
-                print('follow wall for x seconds')
-                # follow wall for X seconds
-
-                self.count_follow += 1
-
-                # if self.count_follow > 10000:
-                #     print('180 degrees turn')
-                #     # turn 180 degrees
-                #     msg = Twist()
-                #     msg.linear.x = 0.0
-                #     msg.angular.z = 2.0
-                #     self.turn_done = True
-                #     self.count_follow = 0
-                #     self.side = 1
-                    # follow wall again
-
-            if (self.twice_corridor and not corridor.in_corridor) and not self.stop_done:
-                # follow wall for X seconds
-                # stop
-                print('follow wall for x seconds')
-                # self.count_follow += 1
-
-                # if self.count_follow > 10000:
-                #     print('stop')
-                #     # turn 180 degrees
-                #     msg = Twist()
-                #     msg.linear.x = 0.0
-                #     msg.angular.z = 0.0
-                #     self.stop_done = True
-                    # self.count_follow = 0
-                    # follow wall again
-    
-
 if __name__ == "__main__":
-    print('program starts')
-    rospy.init_node('wall_test', anonymous=True)
+    print('Program starts')
+    # initialising ROS node
+    rospy.init_node('behaviour_wall_follow', anonymous=True)
+    # creating object to handle corridor detection and communication to other juno
     corridor = Corridor()
+    # creating object to perform the wall following
     wall_follower = WallFollower()
     rospy.spin()

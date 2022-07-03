@@ -1,10 +1,30 @@
-#!/usr/bin/env python2
+"""
+This code is from the wall_follower_sim code from Yoraish.
+Github: https://github.com/yoraish/lidar_bot/tree/wall-follow-example/src/ros/wall_follower_sim
+
+Code for the controller of the behaviour based wall following class for the autonomous navigational robotics hackathon
+from European Robotics Forum (ERF) 2022, implemented specifically for the Lely
+Juno robot.
+Team Unuversity of Amsterdam
+Github: https://github.com/oskarbosgraaf/erf2022
+
+Written and implemented by:
+    Sjoerd Gunneweg
+    Thijmen Nijdam
+    Jurgen de Heus
+    Francien Barkhof
+    Oskar Bosgraaf
+    Juell Sprott
+    Sander van den Bent
+    Derck Prinzhoorn
+
+last updated: 3st of July, 2022
+"""
 
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 import time
-
 import rospy
 
 class PID():
