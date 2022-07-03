@@ -54,19 +54,19 @@ check catkin_ws ROS(1) packages and launch files
 
 ### Jurgen
 <p align="left">
-<a href="https://www.linkedin.com/in/jurgen-de-heus/"><img src="https://www.linkedin.com/in/jurgen-de-heus/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/jurgen-de-heus/"><img src="https://www.linkedin.com/in/jurgen-de-heus/overlay/photo/" alt="Jurgen" width="100px"/></a>
 </p>
 
 ### Thijmen
 
 <p align="left">
-<a href="https://www.linkedin.com/in/thijmen-nijdam/"><img src="https://www.linkedin.com/in/thijmen-nijdam/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/thijmen-nijdam/"><img src="https://www.linkedin.com/in/thijmen-nijdam/overlay/photo/" alt="Thijmen" width="100px"/></a>
 </p>
 
 ### Juell
 
 <p align="left">
-<a href="https://www.linkedin.com/in/juellsprott/"><img src="https://www.linkedin.com/in/juellsprott/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/juellsprott/"><img src="https://www.linkedin.com/in/juellsprott/overlay/photo/" alt="Juell" width="100px"/></a>
 </p>
 
 </br>
