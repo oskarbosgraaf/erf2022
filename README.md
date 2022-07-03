@@ -1,15 +1,15 @@
+<!---Banner-->
+![banner](https://www.uva.nl/binaries/_ht_1561017307337/extralarge/content/gallery/subsites/extranet/huisstijl/logo-regular.jpg)
+
 # UvA erf2022
-unofficial repository for the European Robotics Forum challenge for the second year project of BSc AI at UvA
+Unofficial repository for the European Robotics Forum challenge for the second year project of BSc AI at UvA.
+
+This repository contains the documentation website code and Markdown source files for [UvA robolab](https://robolab.science.uva.nl/)
+## IN DEVELOPMENT 
 
 ## file structure
 check catkin_ws ROS(1) packages and launch files
 
-<!---Banner-->
-![banner](https://www.uva.nl/binaries/_ht_1561017307337/extralarge/content/gallery/subsites/extranet/huisstijl/logo-regular.jpg)
-
-# Autograde
-This repository contains the documentation website code and Markdown source files for [UvA robolab](https://robolab.science.uva.nl/)
-## IN DEVELOPMENT 
 
 ## Project Description
 ### Project Goal
