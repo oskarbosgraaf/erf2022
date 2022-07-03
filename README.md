@@ -84,6 +84,6 @@ check catkin_ws ROS(1) packages and launch files
 
 ## License
 
-The GitHub product documentation in the assets, content, and data folders are licensed under Creative Commons.
+The GitHub product documentation in the assets, content, and data folders are licensed under [Creative Commons](https://creativecommons.org/licenses/by/4.0/).
 
-All other code in this repository is also licensed under Creative Commons.
+All other code in this repository is also licensed under [Creative Commons](https://creativecommons.org/licenses/by/4.0/).
