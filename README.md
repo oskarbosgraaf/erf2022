@@ -54,7 +54,7 @@ check catkin_ws ROS(1) packages and launch files
 
 ### Jurgen
 <p align="left">
-<a href="https://www.linkedin.com/in/jurgen-de-heus/"><img src="https://www.linkedin.com/in/jurgen-de-heus/overlay/photo/" alt="Jurgen" width="100px"/></a>
+<a href="https://www.linkedin.com/in/jurgen-de-heus/"><img src="https://media-exp2.licdn.com/dms/image/C4D03AQG-4nogiTSPxw/profile-displayphoto-shrink_800_800/0/1638117258290?e=1662595200&v=beta&t=p6TMHk1wr9DTY5msdBkO6Zv2T1KU0nE5tmVxBCMyW3U" alt="Jurgen" width="100px"/></a>
 </p>
 
 ### Thijmen
