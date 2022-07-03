@@ -7,10 +7,6 @@ Unofficial repository for the European Robotics Forum challenge for the second y
 This repository contains the documentation website code and Markdown source files for [UvA robolab](https://robolab.science.uva.nl/)
 ## IN DEVELOPMENT 
 
-## file structure
-check catkin_ws ROS(1) packages and launch files
-
-
 ## Project Description
 ### Project Goal
 The goal of this project is to develop software for the ERF challenge. The challenge was to implement code on two Lely Juno robots.
@@ -40,6 +36,9 @@ The UvA ERF software has the following functionalities:
 ## Usage Examples
 
 
+
+## file structure
+check catkin_ws ROS(1) packages and launch files
 
 
 ## Default Configs
