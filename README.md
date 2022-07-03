@@ -49,7 +49,7 @@ check catkin_ws ROS(1) packages and launch files
 ## Credits
 ### Derck Prinzhorn
 <p align="left">
-<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://www.linkedin.com/in/derckprinzhorn/overlay/photo/" alt="Derck Prinzhorn" width="100px"/></a>
+<a href="https://www.linkedin.com/in/derckprinzhorn/"><img src="https://media-exp2.licdn.com/dms/image/C4E03AQHmwcOiX6_Cgg/profile-displayphoto-shrink_800_800/0/1653219559321?e=1662595200&v=beta&t=dEtZGN1kVpNjbZw_zKhrcK-lzABPabz4kCMkEHV9-Eg" alt="Derck Prinzhorn" width="100px"/></a>
 </p>
 
 ### Jurgen
@@ -60,13 +60,13 @@ check catkin_ws ROS(1) packages and launch files
 ### Thijmen
 
 <p align="left">
-<a href="https://www.linkedin.com/in/thijmen-nijdam/"><img src="https://www.linkedin.com/in/thijmen-nijdam/overlay/photo/" alt="Thijmen" width="100px"/></a>
+<a href="https://www.linkedin.com/in/thijmen-nijdam/"><img src="https://media-exp2.licdn.com/dms/image/C4E03AQHQTrECneCS1g/profile-displayphoto-shrink_800_800/0/1654970115289?e=1662595200&v=beta&t=_sWg_tBc3PD3FILlMEKOWrTFy099siC-3NYdj6a0az8" alt="Thijmen" width="100px"/></a>
 </p>
 
 ### Juell
 
 <p align="left">
-<a href="https://www.linkedin.com/in/juellsprott/"><img src="https://www.linkedin.com/in/juellsprott/overlay/photo/" alt="Juell" width="100px"/></a>
+<a href="https://www.linkedin.com/in/juellsprott/"><img src="https://media-exp2.licdn.com/dms/image/C4E03AQFFpTqweCzzxQ/profile-displayphoto-shrink_800_800/0/1656682448242?e=1662595200&v=beta&t=mQIo-O-t8t-HODBEa7HuK-zqs3IRDQ3cHU9lgYPT1gc" alt="Juell" width="100px"/></a>
 </p>
 
 </br>
